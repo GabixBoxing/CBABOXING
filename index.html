@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBA — Cuban Boxing Academy</title>
+  <meta name="description" content="Academia de Boxeo en Henderson, Nevada. Entrena bajo la auténtica Metodología Sagarra con el Coach Osvimer Rodríguez, Licenciado en Cultura Física.">
+  
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CBA — Cuban Boxing Academy">
+  <meta property="og:description" content="Aprende el sistema que forjó a los más grandes campeones olímpicos. Ciencia aplicada al boxeo en Henderson, NV.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --dark: #060913;
+      --dark2: #0b0f19;
+      --dark3: #111726;
+      --dark4: #171f33;
+      --gold: #d4a017;
+      --gold2: #b8860b;
+      --red: #c0392b;
+      --border: rgba(255,255,255,0.08);
+      --text: #e2e8f0;
+      --muted: #8a99ad;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+    
+    .section { padding: 60px 20px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-family: 'Barlow Condensed'; font-weight: 900; color: var(--gold); letter-spacing: 2px; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; }
+    .section-title { font-family: 'Bebas Neue'; font-size: 42px; color: #fff; letter-spacing: 1px; margin-bottom: 12px; line-height: 1; }
+    .section-desc { font-size: 15px; color: var(--muted); max-width: 600px; line-height: 1.6; }
+
+    /* Nav Bar */
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--dark2); border-bottom: 1px solid var(--border); }
+    .logo { font-family: 'Bebas Neue'; font-size: 28px; color: #fff; letter-spacing: 1px; }
+    .logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 20px; list-style: none; }
+    .nav-links a { color: var(--text); text-decoration: none; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* Coach Grid */
+    .coach-grid { display: grid; grid-template-columns: 350px 1fr; gap: 40px; margin-top: 30px; align-items: start; }
+    .coach-visual { position: relative; }
+    .coach-photo { width: 100%; height: 450px; background: var(--dark3); border: 1px solid var(--border); border-radius: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .coach-badge { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); background: var(--red); color: #fff; font-family: 'Bebas Neue'; padding: 6px 16px; border-radius: 6px; font-size: 14px; letter-spacing: 1px; white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+    .coach-role { font-family: 'Barlow Condensed'; font-weight: 900; color: var(--gold); letter-spacing: 1.5px; font-size: 13px; margin-bottom: 16px; }
+    .coach-bio { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 16px; }
+    .coach-certs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 24px; }
+    .cert { display: flex; align-items: center; gap: 8px; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 13px; color: #fff; }
+    .cert-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+
+    /* Schedule */
+    .schedule-wrap { width: 100%; overflow-x: auto; margin-top: 24px; border: 1px solid var(--border); border-radius: 12px; }
+    .schedule-table { width: 100%; border-collapse: collapse; text-align: left; background: var(--dark2); font-family: 'Barlow Condensed'; }
+    .schedule-table th, .schedule-table td { padding: 16px; border-bottom: 1px solid var(--border); }
+    .schedule-table th { background: var(--dark3); color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+    .schedule-table td { font-size: 15px; font-weight: 700; }
+    .schedule-special { color: var(--gold); font-style: italic; background: rgba(212,160,23,0.02); }
+
+    /* Grid & Cards */
+    .legends-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+    .legend-card { background: linear-gradient(135deg, var(--dark3), var(--dark4)); border: 1px solid rgba(212,160,23,0.15); border-radius: 12px; padding: 20px; display: flex; gap: 16px; }
+    .legend-medals { font-size: 24px; line-height: 1; }
+    .legend-name { font-family: 'Bebas Neue'; font-size: 22px; color: #fff; letter-spacing: 0.5px; }
+    .legend-years { font-size: 11px; color: var(--gold); font-weight: 700; font-family: 'Barlow Condensed'; margin-bottom: 8px; }
+    .legend-note { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    .champs-label { font-family: 'Bebas Neue'; font-size: 18px; color: #fff; letter-spacing: 1px; margin: 32px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+    .champs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+    .champ-card { background: var(--dark3); border: 1px solid var(--border); border-radius: 10px; padding: 14px; transition: .2s; }
+    .champ-era { font-size: 10px; font-weight: 900; color: var(--gold); font-family: 'Barlow Condensed'; letter-spacing: 1px; margin-bottom: 4px; }
+    .champ-name { font-family: 'Bebas Neue'; font-size: 18px; color: #fff; }
+    .champ-cat { font-size: 11px; color: var(--muted); font-family: 'Barlow'; }
+
+    /* Silver and Bronze Styles */
+    .champ-card.champ-silver { border-color: rgba(255,255,255,0.05); background: rgba(23, 31, 51, 0.4); }
+    .champ-era-silver { color: #a0aec0; }
+
+    /* Stats & Banners */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 40px; text-align: center; }
+    .stat { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .stat-num { font-family: 'Bebas Neue'; font-size: 36px; color: #fff; line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 11px; color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; letter-spacing: 1px; }
+    .methodology-banner { background: linear-gradient(135deg, #0a0e1a, #111828); border: 1px solid rgba(212,160,23,.2); border-radius: 12px; padding: 20px; margin-top: 24px; text-align: center; }
+
+    /* Gallery Tabs */
+    .gallery-tabs { display: flex; gap: 10px; }
+    .g-tab { background: var(--dark3); border: 1px solid var(--border); color: var(--muted); padding: 10px 20px; border-radius: 8px; font-family: 'Bebas Neue'; font-size: 14px; letter-spacing: 1px; cursor: pointer; transition: .2s; }
+    .g-tab.active { background: var(--gold); color: #000; border-color: var(--gold); }
+    .empty-gallery { text-align: center; padding: 60px 20px; background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; color: var(--muted); font-size: 12px; }
+
+    /* Modal Styles */
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:var(--dark2); border:1px solid var(--border); width:100%; max-width:700px; max-height:85vh; border-radius:16px; overflow-y:auto; position:relative; padding:32px; }
+    .modal-close { position:absolute; top:20px; right:20px; background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; }
+    .modal-tag { font-size:10px; color:var(--gold); font-weight:900; font-family:'Barlow Condensed'; letter-spacing:2px; margin-bottom:6px; }
+    .modal-title { font-family:'Bebas Neue'; font-size:36px; color:#fff; line-height:1; }
+    .modal-subtitle { font-size:13px; color:var(--muted); line-height:1.5; margin-top:6px; }
+    .modal-body { margin-top:24px; }
+    .story-section { margin-bottom:24px; }
+    .story-year { font-family:'Bebas Neue'; font-size:14px; color:var(--gold); letter-spacing:1px; margin-bottom:4px; }
+    .story-title { font-family:'Bebas Neue'; font-size:20px; color:#fff; margin-bottom:8px; }
+    .story-text { font-size:13px; color:var(--muted); line-height:1.7; margin-bottom:12px; }
+    .story-quote { background:var(--dark3); border-left:3px solid var(--gold); padding:12px; font-size:12px; color:#fff; font-style:italic; line-height:1.6; border-radius:0 8px 8px 0; }
+    .story-divider { border:0; height:1px; background:var(--border); margin:24px 0; }
+
+    /* Admin Panel Elements */
+    .upload-box { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .upload-box h3 { font-family: 'Bebas Neue'; font-size: 20px; color: #fff; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .upload-desc { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+    .upload-row { display: flex; gap: 10px; }
+    .upload-input { flex: 1; background: var(--dark4); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #fff; font-size: 13px; }
+    .upload-btn { background: var(--gold); color: #000; border: none; font-family: 'Bebas Neue'; font-size: 14px; letter-spacing: 1px; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+    .upload-select { background: var(--dark4); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #fff; font-size: 13px; width: 100%; margin-bottom: 10px; }
+    .admin-tab-group { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .admin-tab { background: none; border: none; color: var(--muted); font-family: 'Bebas Neue'; font-size: 14px; letter-spacing: 1px; padding: 6px 12px; cursor: pointer; }
+    .admin-tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+    .admin-logout { background: none; border: 1px solid var(--red); color: var(--red); font-family: 'Bebas Neue'; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 20px; width: 100%; letter-spacing: 1px; }
+
+    /* Pin Board UI */
+    .pin-container { max-width: 280px; margin: 40px auto; text-align: center; }
+    .pin-dots { display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; }
+    .pin-dot { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 50%; transition: .1s; }
+    .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
+    .pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .pin-btn { background: var(--dark3); border: 1px solid var(--border); color: #fff; font-family: 'Bebas Neue'; font-size: 24px; padding: 16px 0; border-radius: 50%; cursor: pointer; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: .1s; }
+    .pin-btn:active { background: var(--dark4); transform: scale(0.95); }
+
+    /* Floating elements & Toast */
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #10b981; color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; z-index: 2000; transition: .3s; opacity: 0; pointer-events: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .wa-float { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; z-index: 999; }
+    .wa-label { background: #25D366; color: #fff; font-family: 'Bebas Neue'; font-size: 12px; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .wa-btn { width: 50px; height: 50px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+
+    @media (max-width: 768px) {
+      .coach-grid { grid-template-columns: 1fr; gap: 20px; }
+      .coach-photo { height: 350px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .navbar { flex-direction: column; gap: 12px; text-align: center; }
+      .nav-links { gap: 12px; flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="navbar">
+    <div class="logo">CBA <span>ACADEMY</span></div>
+    <ul class="nav-links">
+      <li><a href="#metodologia">Nosotros</a></li>
+      <li><a href="#about-coach">Mi Historia</a></li>
+      <li><a href="#horarios">Horarios</a></li>
+      <li><a href="#campeones">Campeones</a></li>
+      <li><a href="#galeria">Galería</a></li>
+      <li><a href="#ubicacion">Ubicación</a></li>
+      <li><a href="#" onclick="openAdmin(); return false;">Admin</a></li>
+    </ul>
+    <div style="display:flex;gap:8px">
+      <button id="lang-es" class="g-tab active" onclick="setLang('es')" style="padding:4px 8px;font-size:11px">ES</button>
+      <button id="lang-en" class="g-tab" onclick="setLang('en')" style="padding:4px 8px;font-size:11px">EN</button>
+    </div>
+  </nav>
+
+  <!-- SECCIÓN EL ENTRENADOR -->
+  <section class="section" style="background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="section-inner">
+      <div class="section-label" data-es="EL ENTRENADOR" data-en="THE COACH">EL ENTRENADOR</div>
+      <div class="coach-grid">
+        <div class="coach-visual">
+          <div class="coach-photo" id="coach-photo-wrap">
+            <img id="coach-photo-img" src="" alt="Coach Osvimer Rodríguez" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:14px">
+            <span id="coach-photo-placeholder" style="font-size:80px">👨‍🏫</span>
+          </div>
+          <div class="coach-badge">USA BOXING CERTIFIED</div>
+        </div>
+        <div class="coach-info">
+          <h2>Osvimer Rodríguez</h2>
+          <div class="coach-role">LICENCIADO EN CULTURA FÍSICA · COACH DE ALTO RENDIMIENTO</div>
+          <p class="coach-bio">Forjado por el maestro <strong style="color:var(--gold)">Ernesto Aispurúa de Boyeros</strong> — uno de los grandes formadores del boxeo cubano — Coach Osvimer logró llegar a los Equipos Nacionales de Cuba acumulando una <strong style="color:var(--gold)">trayectoria extraordinaria e invicta</strong> durante años en torneos provinciales y nacionales.</p>
+          <p class="coach-bio">Su trayectoria fue detenida no por falta de talento, sino por lesiones del metacarpiano de ambas manos. El cuerpo médico del alto rendimiento deportivo decretó su baja oficial debido a las lesiones crónicas metacarpianas — cerrando un capítulo de sacrificio y abriendo el de la enseñanza.</p>
+          <p class="coach-bio">En los Equipos Nacionales de Cuba fue entrenado por el maestro <strong style="color:var(--gold)">Pedro &quot;Peter&quot; Roque</strong> — uno de los grandes entrenadores del sistema nacional cubano. Bajo su dirección, Osvimer continuó perfeccionando la Metodología Sagarra al más alto nivel competitivo.</p>
+          <p class="coach-bio">Hoy enseña el <strong style="color:var(--gold)">mismo sistema que forjó a los más grandes</strong> — porque lo vivió desde adentro, desde el sudor, desde cada combate, desde las lesiones. No como observador — como protagonista.</p>
+          <div class="coach-certs">
+            <div class="cert"><div class="cert-dot"></div>USA Boxing Green Level Coach</div>
+            <div class="cert"><div class="cert-dot"></div>SafeSport Trained</div>
+            <div class="cert"><div class="cert-dot"></div>USADA Coach's Advantage</div>
+            <div class="cert"><div class="cert-dot"></div>Lic. Cultura Física</div>
+            <div class="cert"><div class="cert-dot"></div>Metodología Sagarra</div>
+            <div class="cert"><div class="cert-dot"></div>25+ Años Experiencia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HORARIOS -->
+  <section class="section" id="horarios">
+    <div class="section-inner">
+      <div class="section-label" data-es="PROGRAMA DE CLASES" data-en="CLASS SCHEDULE">PROGRAMA DE CLASES</div>
+      <h2 class="section-title">Horarios de Entrenamiento</h2>
+      <p class="section-desc">Cada clase está estructurada según la metodología de periodización — técnica primero, físico después. Sin excepción.</p>
+      <div class="schedule-wrap">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>CLASE</th>
+              <th>LUNES</th>
+              <th>MARTES</th>
+              <th>MIÉRCOLES</th>
+              <th>JUEVES</th>
+              <th>VIERNES</th>
+              <th>SÁBADO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Juvenil 9-12 años</td>
+              <td>4:30 PM</td><td>4:30 PM</td><td>4:30 PM</td><td>4:30 PM</td><td>4:30 PM</td><td>10:00 AM</td>
+            </tr>
+            <tr>
+              <td>Juvenil 13-14 años</td>
+              <td>5:30 PM</td><td>5:30 PM</td><td>5:30 PM</td><td>5:30 PM</td><td>5:30 PM</td><td>11:30 AM</td>
+            </tr>
+            <tr>
+              <td>Amateur Menor -16</td>
+              <td>6:30 PM</td><td>6:30 PM</td><td>6:30 PM</td><td>6:30 PM</td><td>6:30 PM</td><td>1:00 PM</td>
+            </tr>
+            <tr>
+              <td>Amateur Mayor +16</td>
+              <td>7:30 PM</td><td>7:30 PM</td><td>7:30 PM</td><td>7:30 PM</td><td>7:30 PM</td><td>3:00 PM</td>
+            </tr>
+            <tr>
+              <td>1 a 1 Personalizado</td>
+              <td colspan="6" class="schedule-special">Bajo demanda — Contactar al Coach · (702) 723-4009</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIOGRAFÍA COMPLETA COACH -->
+  <section class="section" style="background:var(--dark);border-top:1px solid var(--border)" id="about-coach">
+    <div class="section-inner">
+      <div class="section-label">📖 TRAYECTORIA REAL</div>
+      <h2 class="section-title">La Historia del Coach Osvimer Rodríguez</h2>
+      <p class="section-desc" style="margin-bottom:32px">Una vida forjada sobre la lona. Del primer nocaut a los 7 años hasta los Equipos Nacionales de Cuba — la trayectoria que da respaldo científico a cada entrenamiento de CBA Academy.</p>
+
+      <div style="display:flex;flex-direction:column;gap:0">
+        <!-- 1982 -->
+        <div style="display:grid;grid-template-columns:100px 1fr;gap:0;position:relative">
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px">
+            <div style="background:var(--gold);color:#000;font-family:'Bebas Neue';font-size:14px;letter-spacing:1px;padding:4px 10px;border-radius:6px;white-space:nowrap">1982</div>
+            <div style="width:2px;flex:1;background:linear-gradient(var(--gold),rgba(212,160,23,.2));margin-top:8px"></div>
+          </div>
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:20px;margin-left:16px;margin-bottom:12px">
+            <div style="font-family:'Bebas Neue';font-size:18px;color:#fff;letter-spacing:1px;margin-bottom:8px">🌅 ORÍGENES — MEDIA LUNA, GRANMA</div>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8">Nacido en Media Luna, Granma (Cuba), Osvimer Rodríguez creció bajo la tutela de sus abuelos en Cuchillo Abajo. A los 7 años, durante una visita a su madre en el asentamiento <strong style="color:#fff">Primero de Mayo en Cienfuegos</strong>, se calzó sus primeros guantes. Esa primera competencia, ganada de forma fulminante por la vía del <strong style="color:var(--gold)">nocaut (KO)</strong>, encendió una chispa inquebrantable: el boxeo no sería solo un deporte, sino su pasión, su amor y su llamado.</p>
+          </div>
+        </div>
+
+        <!-- 1995 -->
+        <div style="display:grid;grid-template-columns:100px 1fr;gap:0;position:relative">
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px">
+            <div style="background:var(--gold);color:#000;font-family:'Bebas Neue';font-size:14px;letter-spacing:1px;padding:4px 10px;border-radius:6px;white-space:nowrap">1995</div>
+            <div style="width:2px;flex:1;background:linear-gradient(var(--gold),rgba(212,160,23,.2));margin-top:8px"></div>
+          </div>
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:20px;margin-left:16px;margin-bottom:12px">
+            <div style="font-family:'Bebas Neue';font-size:18px;color:#fff;letter-spacing:1px;margin-bottom:8px">🏛️ BOYEROS, LA HABANA — LA FORJA DEL CARÁCTER</div>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8">A los 12 años se trasladó a Boyeros, La Habana, donde cayó en las manos del entrenador <strong style="color:var(--gold)">Ernesto Aispurúa</strong>. Desde un modesto gimnasio de Santa María de apenas 6×5 metros, Aispurúa perfeccionó su técnica y formó en él un carácter recto y una disciplina de hierro, convirtiéndose en una figura paterna.</p>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8;margin-top:8px">Con solo <strong style="color:#fff">13 años</strong>, Osvimer ya vencía con solvencia a los atletas élite de la EIDE Mártires de Barbados, incluyendo al mejor de la división de los 48 kg. Se coronó consecutivamente e invicto en la <strong style="color:var(--gold)">Copa 13 de Marzo</strong> y los <strong style="color:var(--gold)">Guantes de Oro</strong>.</p>
+          </div>
+        </div>
+
+        <!-- 1998 -->
+        <div style="display:grid;grid-template-columns:100px 1fr;gap:0;position:relative">
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px">
+            <div style="background:var(--gold);color:#000;font-family:'Bebas Neue';font-size:14px;letter-spacing:1px;padding:4px 10px;border-radius:6px;white-space:nowrap">1998</div>
+            <div style="width:2px;flex:1;background:linear-gradient(var(--gold),rgba(212,160,23,.2));margin-top:8px"></div>
+          </div>
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:20px;margin-left:16px;margin-bottom:12px">
+            <div style="font-family:'Bebas Neue';font-size:18px;color:#fff;letter-spacing:1px;margin-bottom:8px">🚀 EQUIPO NACIONAL JUVENIL — ÉLITE INTERNACIONAL</div>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8">Su progresión lo llevó a la Academia de Boxeo de Murgoba bajo la dirección de <strong style="color:var(--gold)">Eduardo Fajardo</strong>. Su boxeo cerebral le valió la captación directa para el <strong style="color:#fff">Equipo Nacional Juvenil de Cuba</strong>, tras derrotar en una eliminatoria memorable al estilista Luis Lao.</p>
+            <div style="background:var(--dark4);border:1px solid rgba(212,160,23,.2);border-radius:8px;padding:12px;margin-top:12px">
+              <div style="font-size:10px;color:var(--gold);font-weight:900;font-family:'Barlow Condensed';letter-spacing:2px;margin-bottom:6px">🥇 TORNEO INTERNACIONAL DE MATANZAS</div>
+              <p style="font-size:12px;color:#b0b8c8;font-family:'Barlow';line-height:1.7">4 combates — solo 4 puntos en contra (marcadores: 11-3, 7-0, 5-0, 9-1). <strong style="color:var(--gold)">Medalla de Oro</strong> + distinciones de <strong style="color:#fff">Atleta Más Técnico</strong> y <strong style="color:#fff">Atleta Más Combativo</strong>. Esto le abrió las puertas a una gira de 3 meses representando a Cuba en <strong style="color:#fff">Alemania, Francia, Suiza e Italia</strong> — donde se consagró <strong style="color:var(--gold)">Campeón de Copa de Oro Internacional</strong>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLAYA GIRÓN -->
+        <div style="display:grid;grid-template-columns:100px 1fr;gap:0;position:relative">
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px">
+            <div style="background:var(--red);color:#fff;font-family:'Bebas Neue';font-size:13px;letter-spacing:1px;padding:4px 8px;border-radius:6px;white-space:nowrap">GIRÓN</div>
+            <div style="width:2px;flex:1;background:linear-gradient(var(--red),rgba(192,57,43,.2));margin-top:8px"></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#1a0500,#2a0a00);border:1px solid rgba(192,57,43,.3);border-radius:12px;padding:20px;margin-left:16px;margin-bottom:12px">
+            <div style="font-family:'Bebas Neue';font-size:18px;color:#fff;letter-spacing:1px;margin-bottom:8px">⚔️ PLAYA GIRÓN — BATALLAS CONTRA LEYENDAS</div>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8">Habiendo acumulado <strong style="color:var(--gold)">7 yesos en la mano izquierda y 6 en la derecha</strong> — retirándoselos él mismo de forma prematura para no perderse un solo asalto — Osvimer se midió en el Campeonato Nacional Playa Girón, el torneo más exigente del país. El cuerpo médico debía infiltrarle <strong style="color:#fff">anestesia directamente en las manos</strong> para poder subir al cuadrilátero.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+              <div style="background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px">
+                <div style="font-size:11px;color:var(--gold);font-weight:900;font-family:'Barlow Condensed';letter-spacing:2px;margin-bottom:4px">vs. RICHARD VAILLANT DE ARMAS — CAMPEÓN MUNDIAL</div>
+                <div style="font-size:9px;color:#888;font-family:'Barlow Condensed';letter-spacing:1px;margin-bottom:6px">TORNEO NACIONAL ROBERTO BALADO — ANTES DE LA GIRA POR ITALIA</div>
+                <p style="font-size:12px;color:#b0b8c8;font-family:'Barlow';line-height:1.7">En el exigente Torneo Nacional Roberto Balado — previo a su gira por Europa — el Coach se midió contra el Campeón Mundial Richard Vaillant de Armas en una batalla de fuego de altísima intensidad, donde recurrió a su máxima inteligencia táctica y desplazamiento para contrarrestar a uno de los oponentes más temidos del boxeo cubano.</p>
+              </div>
+              <div style="background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px">
+                <div style="font-size:11px;color:var(--gold);font-weight:900;font-family:'Barlow Condensed';letter-spacing:2px;margin-bottom:4px">vs. HÉCTOR VINENT — DOBLE CAMPEÓN OLÍMPICO</div>
+                <p style="font-size:12px;color:#b0b8c8;font-family:'Barlow';line-height:1.7">Peleando prácticamente con una sola mano, el Coach dominó las tres distancias (larga, media y corta) en un combate magistral. La decisión de los jueces cerró <strong style="color:#fff">3-2 en su contra</strong>. Al bajarse del ring, el propio Vinent reconoció públicamente su extraordinaria calidad técnica y le vaticinó que estaba destinado a ser un gran campeón.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HOY -->
+        <div style="display:grid;grid-template-columns:100px 1fr;gap:0">
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px">
+            <div style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-family:'Bebas Neue';font-size:13px;letter-spacing:1px;padding:4px 8px;border-radius:6px;white-space:nowrap">HOY</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#0a1500,#0f2000);border:1px solid rgba(39,174,96,.3);border-radius:12px;padding:20px;margin-left:16px">
+            <div style="font-family:'Bebas Neue';font-size:18px;color:#fff;letter-spacing:1px;margin-bottom:8px">🎓 LICENCIADO EN CULTURA FÍSICA — EL LEGADO</div>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8">El desgaste físico severo en ambas manos obligó a las comisiones médicas a decretar su <strong style="color:#fff">retiro oficial como atleta</strong>. Lejos de rendirse, Osvimer transformó el dolor en conocimiento y se graduó como <strong style="color:var(--gold)">Licenciado en Cultura Física</strong> en la Universidad Manuel Fajardo y la Ciudad Deportiva de La Habana.</p>
+            <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8;margin-top:8px">Hoy, con toda esa experience de élite forjada en los más altos niveles del boxeo cubano, aplica en Henderson, Nevada el mismo sistema que formó a los más grandes campeones de la historia del boxeo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METODOLOGÍA -->
+  <section class="section" style="background:var(--dark2);border-top:1px solid var(--border)" id="metodologia">
+    <div class="section-inner">
+      <div class="section-label">🧬 CIENCIA APLICADA AL BOXEO</div>
+      <h2 class="section-title">Los 3 Pilares de CBA Academy</h2>
+      <p class="section-desc" style="margin-bottom:32px">Metodología desarrollada desde la experiencia real de élite — no desde libros, sino desde una trayectoria invicta en torneos nacionales e internacionales, 7 yesos en la mano izquierda y la lección que solo te da el dolor.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <!-- PILAR 1 -->
+        <div style="background:var(--dark3);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden;transition:.3s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)"></div>
+          <div style="font-size:36px;margin-bottom:12px">🎯</div>
+          <div style="font-family:'Bebas Neue';font-size:16px;color:var(--gold);letter-spacing:1px;margin-bottom:6px">PILAR 1</div>
+          <div style="font-family:'Bebas Neue';font-size:20px;color:#fff;letter-spacing:1px;margin-bottom:12px;line-height:1.1">DOMINIO DE LOS 7 ESTILOS DE COMBATE</div>
+          <p style="font-size:12px;color:#aaa;font-family:'Barlow';line-height:1.8">Un boxeador de CBA no aprende a "pelear diferente" — aprende a <strong style="color:#fff">dominar, descifrar y neutralizar</strong> los 7 estilos de boxeo existentes. Esto garantiza una capacidad de adaptación absoluta sobre el ring: el atleta siempre tiene la respuesta táctica correcta ante cualquier rival, en cualquier momento.</p>
+        </div>
+
+        <!-- PILAR 2 -->
+        <div style="background:var(--dark3);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden;transition:.3s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)"></div>
+          <div style="font-size:36px;margin-bottom:12px">🦴</div>
+          <div style="font-family:'Bebas Neue';font-size:16px;color:var(--gold);letter-spacing:1px;margin-bottom:6px">PILAR 2</div>
+          <div style="font-family:'Bebas Neue';font-size:20px;color:#fff;letter-spacing:1px;margin-bottom:12px;line-height:1.1">PROTECCIÓN BIOMECÁNICA DE ARTICULACIONES</div>
+          <p style="font-size:12px;color:#aaa;font-family:'Barlow';line-height:1.8">Habiendo sufrido en carne propia lesiones metacarpianas severas que detuvieron su carrera, el Coach prohíbe estrictamente en CBA: <strong style="color:#fff">golpear sacos duros en edades tempranas</strong> y correr sobre cemento con calzado inadecuado. La salud articular del atleta es la base de una carrera larga.</p>
+        </div>
+
+        <!-- PILAR 3 -->
+        <div style="background:var(--dark3);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden;transition:.3s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)"></div>
+          <div style="font-size:36px;margin-bottom:12px">📈</div>
+          <div style="font-family:'Bebas Neue';font-size:16px;color:var(--gold);letter-spacing:1px;margin-bottom:6px">PILAR 3</div>
+          <div style="font-family:'Bebas Neue';font-size:20px;color:#fff;letter-spacing:1px;margin-bottom:12px;line-height:1.1">PEDAGOGÍA DEL SPARRING REGULADO</div>
+          <p style="font-size:12px;color:#aaa;font-family:'Barlow';line-height:1.8">En CBA ningún atleta sube al ring a "sobrevivir". El proceso es estricto y progresivo:</p>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px">
+            <div style="font-size:11px;font-family:'Barlow Condensed';font-weight:700;color:#fff;display:flex;align-items:center;gap:6px"><span style="color:var(--gold)">1.</span> Escuela de Combate Dirigida</div>
+            <div style="font-size:11px;font-family:'Barlow Condensed';font-weight:700;color:#fff;display:flex;align-items:center;gap:6px"><span style="color:var(--gold)">2.</span> Escuela de Combate Libre</div>
+            <div style="font-size:11px;font-family:'Barlow Condensed';font-weight:700;color:#fff;display:flex;align-items:center;gap:6px"><span style="color:var(--gold)">3.</span> 3-4 Meses de Sparring Acondicionado</div>
+            <div style="font-size:11px;font-family:'Barlow Condensed';font-weight:700;color:var(--gold);display:flex;align-items:center;gap:6px"><span>4.</span> Sparring Libre — Preparado de verdad</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="methodology-banner">
+        <p style="font-size:13px;color:#b0b8c8;font-family:'Barlow';line-height:1.8;max-width:700px;margin:0 auto"><strong style="color:var(--gold)">Este sistema no es teoría.</strong> Es el resultado de una carrera invicta en torneos nacionales e internacionales, 7 yesos en la mano izquierda, 6 en la derecha, giras por Europa representando a Cuba, y la formación académica en la Universidad Manuel Fajardo — la misma que forjó a los entrenadores detrás de los 34 oros olímpicos cubanos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAMPEONES -->
+  <section class="section champions" id="campeones">
+    <div class="section-inner">
+      <div class="section-label" data-es="🇨🇺 LA METODOLOGÍA QUE LOS FORMÓ" data-en="🇨🇺 THE METHODOLOGY THAT FORMED THEM">🇨🇺 LA METODOLOGÍA QUE LOS FORMÓ</div>
+      <h2 class="section-title">Campeones Olímpicos y Mundiales Cubanos</h2>
+      <p class="section-desc" style="margin-bottom:32px">Todos forjados bajo la Metodología Sagarra. El mismo sistema que Coach Osvimer Rodríguez aplica hoy en Cuban Boxing Academy.</p>
+
+      <div class="champs-label">⭐ LEYENDAS — 3 OROS OLÍMPICOS CONSECUTIVOS</div>
+      <div class="legends-grid">
+        <div class="legend-card">
+          <div class="legend-medals">🥇🥇🥇</div>
+          <div>
+            <div class="legend-name">Teófilo Stevenson</div>
+            <div class="legend-years">PESADO · Munich 72 · Montreal 76 · Moscú 80</div>
+            <div class="legend-note">Rechazó millones de dólares para quedarse en Cuba y defender su país. Considerado por muchos el mejor boxeador amateur de todos los tiempos.</div>
+          </div>
+        </div>
+        <div class="legend-card">
+          <div class="legend-medals">🥇🥇🥇</div>
+          <div>
+            <div class="legend-name">Félix Savón</div>
+            <div class="legend-years">PESADO · Barcelona 92 · Atlanta 96 · Sídney 00</div>
+            <div class="legend-note">Tres oros olímpicos consecutivos. Campeón mundial 6 veces. El heredero natural de Stevenson en el peso pesado cubano.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="champs-label">🥇 OROS OLÍMPICOS — 1968 a 2024</div>
+      <div class="champs-grid">
+        <div class="champ-card"><div class="champ-era">MÉXICO 1968</div><div class="champ-name">Rolando Garbey</div><div class="champ-cat">Welter Medio</div></div>
+        <div class="champ-card"><div class="champ-era">MÉXICO 1968</div><div class="champ-name">Enrique Regüeiferos</div><div class="champ-cat">Welter Ligero</div></div>
+        <div class="champ-card"><div class="champ-era">MUNICH 1972</div><div class="champ-name">Orlando Martínez</div><div class="champ-cat">Gallo</div></div>
+        <div class="champ-card"><div class="champ-era">MUNICH 1972</div><div class="champ-name">Emilio Correa Sr.</div><div class="champ-cat">Welter</div></div>
+        <div class="champ-card"><div class="champ-era">MONTREAL 1976</div><div class="champ-name">Ángel Herrera</div><div class="champ-cat">Pluma · también Moscú 80</div></div>
+        <div class="champ-card"><div class="champ-era">MONTREAL 1976</div><div class="champ-name">Jorge Hernández</div><div class="champ-cat">Minimosca</div></div>
+        <div class="champ-card"><div class="champ-era">MOSCÚ 1980</div><div class="champ-name">Juan Hernández</div><div class="champ-cat">Gallo</div></div>
+        <div class="champ-card"><div class="champ-era">MOSCÚ 1980</div><div class="champ-name">Andrés Aldama</div><div class="champ-cat">Welter</div></div>
+        <div class="champ-card"><div class="champ-era">MOSCÚ 1980</div><div class="champ-name">Armando Martínez</div><div class="champ-cat">Welter Medio</div></div>
+        <div class="champ-card"><div class="champ-era">MOSCÚ 1980</div><div class="champ-name">José Gómez Mustelier</div><div class="champ-cat">Medio</div></div>
+        <div class="champ-card"><div class="champ-era">BARCELONA 1992</div><div class="champ-name">Joel Casamayor</div><div class="champ-cat">Gallo</div></div>
+        <div class="champ-card"><div class="champ-era">BARCELONA 1992</div><div class="champ-name">Rogelio Marcelo</div><div class="champ-cat">Semipesado</div></div>
+        <div class="champ-card"><div class="champ-era">BARCELONA 1992</div><div class="champ-name">Juan Carlos Lemus</div><div class="champ-cat">Ligero</div></div>
+        <div class="champ-card"><div class="champ-era">BARCELONA 1992</div><div class="champ-name">Héctor Vinent</div><div class="champ-cat">Welter Ligero · también Atlanta 96</div></div>
+        <div class="champ-card"><div class="champ-era">BARCELONA 1992</div><div class="champ-name">Ariel Hernández</div><div class="champ-cat">Welter Medio · también Atlanta 96</div></div>
+        <div class="champ-card"><div class="champ-era">BARCELONA 1992</div><div class="champ-name">Roberto Balado</div><div class="champ-cat">Pesado</div></div>
+        <div class="champ-card"><div class="champ-era">ATLANTA 1996</div><div class="champ-name">Maikro Romero</div><div class="champ-cat">Mosca</div></div>
+        <div class="champ-card"><div class="champ-era">SÍDNEY 2000</div><div class="champ-name">Guillermo Rigondeaux</div><div class="champ-cat">Gallo · también Atenas 04</div></div>
+        <div class="champ-card"><div class="champ-era">SÍDNEY 2000</div><div class="champ-name">Mario Kindelán</div><div class="champ-cat">Ligero · también Atenas 04</div></div>
+        <div class="champ-card"><div class="champ-era">ATENAS 2004</div><div class="champ-name">Yan Bartelemí</div><div class="champ-cat">Minimosca</div></div>
+        <div class="champ-card"><div class="champ-era">ATENAS 2004</div><div class="champ-name">Yuriorkis Gamboa</div><div class="champ-cat">Pluma</div></div>
+        <div class="champ-card"><div class="champ-era">ATENAS 2004</div><div class="champ-name">Odlanier Solís</div><div class="champ-cat">Pesado</div></div>
+        <div class="champ-card"><div class="champ-era">RIO 2016</div><div class="champ-name">Julio César La Cruz</div><div class="champ-cat">Pesado</div></div>
+        <div class="champ-card"><div class="champ-era">RIO 2016</div><div class="champ-name">Arlen López</div><div class="champ-cat">Medio · también Tokio 2020</div></div>
+        <div class="champ-card"><div class="champ-era">TOKIO 2020</div><div class="champ-name">Robeisy Ramírez</div><div class="champ-cat">Mosca · también Rio 2016</div></div>
+        <div class="champ-card" style="border-color:rgba(212,160,23,.4)"><div class="champ-era">PARIS 2024</div><div class="champ-name">Erislandy Álvarez</div><div class="champ-cat">63.5 kg · El más reciente campeón</div></div>
+      </div>
+
+      <div class="champs-label">🥈🥉 MEDALLAS DE PLATA Y BRONCE</div>
+      <div class="champs-grid">
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">MUNICH 72 🥈</div><div class="champ-name">Emilio Correa Jr.</div><div class="champ-cat">Semipesado</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">MUNICH 72 🥉</div><div class="champ-name">Gilberto Carrillo</div><div class="champ-cat">Semipesado</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">MONTREAL 76 🥈</div><div class="champ-name">Ramón Duvalón</div><div class="champ-cat">Welter</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">MONTREAL 76 🥉</div><div class="champ-name">Sixto Soria</div><div class="champ-cat">Minimosca</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">MONTREAL 76 🥉</div><div class="champ-name">Luis Martínez</div><div class="champ-cat">Medio</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">MOSCÚ 80 🥈</div><div class="champ-name">Adolfo Horta</div><div class="champ-cat">Pluma</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">BARCELONA 92 🥈</div><div class="champ-name">Juan Carlos Ortiz</div><div class="champ-cat">Pluma</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">ATLANTA 96 🥈</div><div class="champ-name">Ramón Garbey</div><div class="champ-cat">Welter</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">ATLANTA 96 🥈</div><div class="champ-name">Alfredo Duvergel</div><div class="champ-cat">Welter Medio</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">SÍDNEY 00 🥉</div><div class="champ-name">Diógenes Luna</div><div class="champ-cat">Súper Ligero</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">ATENAS 04 🥉</div><div class="champ-name">Yudel Johnson</div><div class="champ-cat">Medio</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">BEIJING 08 🥉</div><div class="champ-name">Yampier Hernández</div><div class="champ-cat">Minimosca</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">RIO 16 🥈</div><div class="champ-name">Joahnys Argilagos</div><div class="champ-cat">Minimosca</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">TOKIO 20 🥈</div><div class="champ-name">Jorge Luis Álvarez</div><div class="champ-cat">Pluma</div></div>
+        <div class="champ-card champ-silver"><div class="champ-era champ-era-silver">PARIS 24 🥉</div><div class="champ-name">Yosvany Veitía</div><div class="champ-cat">51 kg</div></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-num"><span class="count-num" data-count="34">34</span></div><div class="stat-label">OROS OLÍMPICOS</div></div>
+        <div class="stat"><div class="stat-num"><span class="count-num" data-count="67" data-suffix="+">67+</span></div><div class="stat-label">MEDALLAS TOTALES</div></div>
+        <div class="stat"><div class="stat-num"><span class="count-num" data-count="100" data-suffix="+">100+</span></div><div class="stat-label">CAMPEONATOS MUNDIALES</div></div>
+        <div class="stat"><div class="stat-num">1</div><div class="stat-label">METODOLOGÍA</div></div>
+      </div>
+      
+      <div style="background:linear-gradient(135deg,#0a0e1a,#111828);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:20px;margin-top:24px;text-align:center">
+        <div style="font-family:'Bebas Neue';font-size:18px;color:var(--gold);letter-spacing:3px;margin-bottom:4px">TODOS FORJADOS BAJO LA METODOLOGÍA SAGARRA</div>
+        <div style="font-size:12px;color:var(--muted);font-family:'Barlow'">El mismo sistema que Coach Osvimer Rodríguez aplica hoy en Cuban Boxing Academy · Henderson, Nevada</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section class="section" id="galeria">
+    <div class="section-inner">
+      <div class="section-label" data-es="GALERÍA CBA" data-en="CBA GALLERY">GALERÍA CBA</div>
+      <h2 class="section-title">Videos y Fotos</h2>
+      <p class="section-desc">Sparring, entrenamientos y competencias de nuestros atletas.</p>
+      <div class="gallery-tabs" style="margin-top:24px">
+        <button class="g-tab active" onclick="showGallery('videos')">📹 VIDEOS</button>
+        <button class="g-tab" onclick="showGallery('fotos')">📸 FOTOS</button>
+      </div>
+      <div id="gallery-content">
+        <div id="videos-section">
+          <div class="videos-grid" id="videos-grid">
+            <div class="empty-gallery" style="grid-column:1/-1">
+              <div style="font-size:40px;margin-bottom:12px">📹</div>
+              <div style="font-size:14px;color:var(--text);font-weight:700;margin-bottom:6px">Próximamente</div>
+              <div>El Coach subirá videos de sparring, entrenamiento y competencias</div>
+            </div>
+          </div>
+        </div>
+        <div id="fotos-section" style="display:none">
+          <div class="photos-grid" id="photos-grid">
+            <div class="empty-gallery" style="grid-column:1/-1">
+              <div style="font-size:40px;margin-bottom:12px">📸</div>
+              <div style="font-size:14px;color:var(--text);font-weight:700;margin-bottom:6px">Próximamente</div>
+              <div>El Coach subirá fotos del gym y los atletas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UBICACIÓN -->
+  <section class="section" style="background:var(--dark);border-top:1px solid var(--border)" id="ubicacion">
+    <div class="section-inner">
+      <div class="section-label" data-es="DÓNDE ESTAMOS" data-en="WHERE WE ARE">DÓNDE ESTAMOS</div>
+      <h2 class="section-title">Ubicación del Gimnasio</h2>
+      <p class="section-desc" style="margin-bottom:24px">Henderson, Nevada — Encuéntranos y ven a tu clase gratis.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+        <!-- MAPA -->
+        <div style="background:var(--dark3);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+          <div style="position:relative;padding-bottom:75%;height:0">
+            <iframe id="gym-map"
+              src="https://maps.google.com/maps?q=Henderson+Nevada+Boxing+gym&output=embed&z=12"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"
+              allowfullscreen loading="lazy">
+            </iframe>
+          </div>
+        </div>
+
+        <!-- INFO -->
+        <div>
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px">
+            <div style="font-size:10px;color:var(--gold);font-weight:900;font-family:'Barlow Condensed';letter-spacing:2px;margin-bottom:8px">📍 DIRECCIÓN</div>
+            <div class="gym-address-text" style="font-size:14px;color:#fff;font-weight:700;font-family:'Barlow Condensed'">Henderson, Nevada</div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Barlow';margin-top:4px">Dirección exacta disponible al contactar al Coach</div>
+          </div>
+          <a href="tel:+17027234009" style="display:flex;align-items:center;gap:12px;background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:14px;text-decoration:none;margin-bottom:10px;transition:.2s">
+            <span style="font-size:22px">📞</span>
+            <div>
+              <div style="font-size:10px;color:var(--gold);font-weight:900;font-family:'Barlow Condensed';letter-spacing:2px">LLAMAR AL COACH</div>
+              <div style="font-size:13px;color:#fff;font-weight:700">(702) 723-4009</div>
+            </div>
+          </a>
+          <a href="https://wa.me/17027234009?text=Hola Coach, quisiera saber la dirección del gimnasio" target="_blank" style="display:flex;align-items:center;gap:12px;background:var(--dark3);border:1px solid #25D366;border-radius:12px;padding:14px;text-decoration:none;transition:.2s">
+            <span style="font-size:22px">💬</span>
+            <div>
+              <div style="font-size:10px;color:#25D366;font-weight:900;font-family:'Barlow Condensed';letter-spacing:2px">PEDIR DIRECCIÓN POR WHATSAPP</div>
+              <div style="font-size:13px;color:#fff;font-weight:700">(702) 723-4009</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROL DE ADMINISTRACIÓN BACKEND -->
+  <section class="section" id="admin" style="display:none; background:var(--dark2); border-top:1px solid var(--border)">
+    <div class="section-inner" style="max-width:500px">
+      <div class="section-label">🔒 PANEL DEL COACH</div>
+      
+      <!-- Vista Login PIN -->
+      <div id="admin-login-view">
+        <h2 class="section-title" style="text-align:center;font-size:28px">Ingresar PIN de Seguridad</h2>
+        <div class="pin-container">
+          <div class="pin-dots">
+            <div class="pin-dot" id="pd0"></div>
+            <div class="pin-dot" id="pd1"></div>
+            <div class="pin-dot" id="pd2"></div>
+            <div class="pin-dot" id="pd3"></div>
+          </div>
+          <div class="pin-grid">
+            <button class="pin-btn" onclick="pinAdmin('1')">1</button>
+            <button class="pin-btn" onclick="pinAdmin('2')">2</button>
+            <button class="pin-btn" onclick="pinAdmin('3')">3</button>
+            <button class="pin-btn" onclick="pinAdmin('4')">4</button>
+            <button class="pin-btn" onclick="pinAdmin('5')">5</button>
+            <button class="pin-btn" onclick="pinAdmin('6')">6</button>
+            <button class="pin-btn" onclick="pinAdmin('7')">7</button>
+            <button class="pin-btn" onclick="pinAdmin('8')">8</button>
+            <button class="pin-btn" onclick="pinAdmin('9')">9</button>
+            <button class="pin-btn" style="background:none;border:none"></button>
+            <button class="pin-btn" onclick="pinAdmin('0')">0</button>
+            <button class="pin-btn" onclick="clearPin()" style="font-size:16px;color:var(--red)">⌫</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista Consola de Control -->
+      <div id="admin-main-view" style="display:none">
+        <div class="admin-tab-group">
+          <button class="admin-tab active" onclick="adminTab('videos')">Videos</button>
+          <button class="admin-tab" onclick="adminTab('fotos')">Fotos</button>
+          <button class="admin-tab" onclick="adminTab('direccion')">Dirección</button>
+          <button class="admin-tab" onclick="adminTab('fotcoach')">Foto Perfil</button>
+        </div>
+
+        <!-- Dirección -->
+        <div id="admin-direccion" style="display:none">
+          <div class="upload-box">
+            <h3>DIRECCIÓN DEL GIMNASIO</h3>
+            <div class="upload-desc">Escribe la dirección exacta del gimnasio. Aparece en el mapa y en la sección de ubicación al instante.</div>
+            <div style="margin-bottom:10px;font-size:11px;color:var(--muted);font-family:'Barlow'">Dirección actual: <span class="gym-address-text" style="color:var(--gold)">No configurada</span></div>
+            <div class="upload-row">
+              <input type="text" class="upload-input" id="gym-address-input" placeholder="ej: 123 Boxing Ave, Henderson, NV 89002">
+              <button class="upload-btn" onclick="saveGymAddress()">GUARDAR ↗</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foto Perfil -->
+        <div id="admin-fotcoach" style="display:none">
+          <div class="upload-box">
+            <h3>MI FOTO DE PERFIL</h3>
+            <div class="upload-desc">Pega aquí el link directo de tu foto como Coach Osvimer Rodríguez. Reemplaza el marcador de posición al instante.</div>
+            <div id="coach-photo-preview" style="width:120px;height:140px;background:var(--dark4);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:40px">👨‍🏫</div>
+            <div class="upload-row">
+              <input type="text" class="upload-input" id="coach-photo-url-inp" placeholder="https://i.imgur.com/tuFoto.jpg" oninput="previewCoachPhoto(this.value)">
+              <button class="upload-btn" onclick="saveCoachPhoto()">GUARDAR ↗</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Videos -->
+        <div id="admin-videos">
+          <div class="upload-box">
+            <h3>AGREGAR VIDEO DE YOUTUBE</h3>
+            <div class="upload-desc">Pega el link de YouTube del sparring, entrenamiento o competencia.</div>
+            <select class="upload-select" id="video-cat">
+              <option value="Sparring">Sparring</option>
+              <option value="Entrenamiento">Entrenamiento</option>
+              <option value="Competencia">Competencia</option>
+            </select>
+            <input type="text" class="upload-input" id="video-title-inp" placeholder="Título del video" style="margin-bottom:10px">
+            <div class="upload-row">
+              <input type="text" class="upload-input" id="video-url-inp" placeholder="https://www.youtube.com/watch?v=...">
+              <button class="upload-btn" onclick="addVideo()">PUBLICAR ↗</button>
+            </div>
+          </div>
+          <div class="uploaded-list" id="admin-videos-list"></div>
+        </div>
+
+        <!-- Fotos -->
+        <div id="admin-fotos" style="display:none">
+          <div class="upload-box">
+            <h3>AGREGAR FOTO</h3>
+            <div class="upload-desc">Pega el link directo de la foto (.jpg, .png).</div>
+            <select class="upload-select" id="foto-cat">
+              <option value="Atletas">Atletas</option>
+              <option value="Gym">Gym</option>
+              <option value="Competencia">Competencia</option>
+            </select>
+            <input type="text" class="upload-input" id="foto-title-inp" placeholder="Descripción de la foto" style="margin-bottom:10px">
+            <div class="upload-row">
+              <input type="text" class="upload-input" id="foto-url-inp" placeholder="https://...">
+              <button class="upload-btn" onclick="addFoto()">PUBLICAR ↗</button>
+            </div>
+          </div>
+          <div class="uploaded-list" id="admin-fotos-list"></div>
+        </div>
+
+        <button class="admin-logout" onclick="adminLogout()">CERRAR SESIÓN</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOAST NOTIFICACIONES -->
+  <div class="toast" id="toast"></div>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a class="wa-float" href="https://wa.me/17027234009?text=Hola Coach, me interesa saber más sobre Cuban Boxing Academy" target="_blank">
+    <div class="wa-label">ESCRÍBEME AHORA</div>
+    <div class="wa-btn">💬</div>
+  </a>
+
+  <!-- SCRIPTS DE CONTROL -->
+  <script>
+    const DB = "https://cuban-boxing-app-default-rtdb.firebaseio.com";
+
+    function fbGet(path) { return fetch(DB + path + ".json").then(r => r.json()); }
+    function fbPost(path, data) { return fetch(DB + path + ".json", { method: "POST", body: JSON.stringify(data) }).then(r => r.json()); }
+    function fbSet(path, data) { return fetch(DB + path + ".json", { method: "PUT", body: JSON.stringify(data) }).then(r => r.json()); }
+    function fbDelete(path) { return fetch(DB + path + ".json", { method: "DELETE" }).then(r => r.json()); }
+
+    // PIN BOARD LÓGICA
+    const ADMIN_PIN = "1967";
+    let adminPinEntry = "";
+
+    function pinAdmin(n) {
+      if (adminPinEntry.length >= 4) return;
+      adminPinEntry += n;
+      updatePinDots();
+      if (adminPinEntry.length === 4) setTimeout(checkAdminPin, 200);
+    }
+    function clearPin() {
+      adminPinEntry = adminPinEntry.slice(0, -1);
+      updatePinDots();
+    }
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        var d = document.getElementById('pd'+i);
+        if (d) d.className = 'pin-dot' + (i < adminPinEntry.length ? ' filled' : '');
+      }
+    }
+    function checkAdminPin() {
+      if (adminPinEntry === ADMIN_PIN) {
+        document.getElementById('admin-login-view').style.display = 'none';
+        document.getElementById('admin-main-view').style.display = 'block';
+        toast('✅ Bienvenido Coach Osvimer');
+      } else {
+        adminPinEntry = "";
+        updatePinDots();
+        toast('❌ PIN incorrecto');
+      }
+    }
+    function adminLogout() {
+      adminPinEntry = "";
+      updatePinDots();
+      document.getElementById('admin-login-view').style.display = 'block';
+      document.getElementById('admin-main-view').style.display = 'none';
+    }
+    function adminTab(t) {
+      document.getElementById('admin-videos').style.display = t === 'videos' ? 'block' : 'none';
+      document.getElementById('admin-fotos').style.display = t === 'fotos' ? 'block' : 'none';
+      document.getElementById('admin-direccion').style.display = t === 'direccion' ? 'block' : 'none';
+      document.getElementById('admin-fotcoach').style.display = t === 'fotcoach' ? 'block' : 'none';
+      document.querySelectorAll('.admin-tab').forEach((b, i) => {
+        b.classList.toggle('active', (t==='videos'&&i===0)||(t==='fotos'&&i===1)||(t==='direccion'&&i===2)||(t==='fotcoach'&&i===3));
+      });
+    }
+
+    // ELIMINACIÓN CORE (CORREGIDO)
+    function deleteVideo(key) {
+      if (confirm('¿Seguro que deseas eliminar este video?')) {
+        fbDelete('/cba_gallery/videos/' + key).then(() => {
+          toast('✅ Video eliminado');
+          loadGallery();
+        });
+      }
+    }
+    function deleteFoto(key) {
+      if (confirm('¿Seguro que deseas eliminar esta foto?')) {
+        fbDelete('/cba_gallery/fotos/' + key).then(() => {
+          toast('✅ Foto eliminada');
+          loadGallery();
+        });
+      }
+    }
+
+    // GALERÍA PÚBLICA
+    function showGallery(t) {
+      document.getElementById('videos-section').style.display = t === 'videos' ? 'block' : 'none';
+      document.getElementById('fotos-section').style.display = t === 'fotos' ? 'block' : 'none';
+      document.querySelectorAll('.g-tab').forEach((b, i) => b.classList.toggle('active', (t==='videos'&&i===0)||(t==='fotos'&&i===1)));
+    }
+    function getYTId(url) {
+      var m = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : null;
+    }
+    function addVideo() {
+      var url = document.getElementById('video-url-inp').value.trim();
+      var title = document.getElementById('video-title-inp').value.trim() || 'Video CBA';
+      var cat = document.getElementById('video-cat').value;
+      var ytId = getYTId(url);
+      if (!ytId) { toast('❌ Link de YouTube inválido'); return; }
+      fbPost('/cba_gallery/videos', { ytId: ytId, title: title, cat: cat, ts: Date.now() }).then(() => {
+        document.getElementById('video-url-inp').value = '';
+        document.getElementById('video-title-inp').value = '';
+        toast('✅ Video publicado');
+        loadGallery();
+      });
+    }
+    function addFoto() {
+      var url = document.getElementById('foto-url-inp').value.trim();
+      var title = document.getElementById('foto-title-inp').value.trim() || 'Foto CBA';
+      var cat = document.getElementById('foto-cat').value;
+      if (!url) { toast('❌ Ingresa un link'); return; }
+      fbPost('/cba_gallery/fotos', { url: url, title: title, cat: cat, ts: Date.now() }).then(() => {
+        document.getElementById('foto-url-inp').value = '';
+        document.getElementById('foto-title-inp').value = '';
+        toast('✅ Foto publicada');
+        loadGallery();
+      });
+    }
+    function loadGallery() {
+      // Función base para refrescar vistas multimedia de Firebase
+    }
+
+    // MODALES Y UTILS
+    function toggleFaq(el) {
+      var isOpen = el.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+      if (!isOpen) el.classList.add('open');
+    }
+    function openAdmin() {
+      var s = document.getElementById('admin');
+      s.style.display = 'block';
+      s.scrollIntoView({ behavior: 'smooth' });
+    }
+    function toast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // DIRECCIÓN E IMÁGENES DINÁMICAS
+    function loadGymAddress() {
+      fbGet("/cba_settings/address").then(data => { if(data && data.address) updateMapAddress(data.address); });
+    }
+    function updateMapAddress(address) {
+      var mapFrame = document.getElementById('gym-map');
+      if (mapFrame) mapFrame.src = "https://maps.google.com/maps?q=" + encodeURIComponent(address) + "&output=embed&z=15";
+      document.querySelectorAll('.gym-address-text').forEach(el => el.textContent = address);
+    }
+    function saveGymAddress() {
+      var addr = document.getElementById('gym-address-input').value.trim();
+      if (!addr) { toast('❌ Ingresa una dirección'); return; }
+      fbSet('/cba_settings/address', { address: addr }).then(() => { updateMapAddress(addr); toast('✅ Dirección guardada'); });
+    }
+    function loadCoachPhoto() {
+      fbGet("/cba_settings/coach_photo").then(data => { if(data && data.url) updateCoachPhoto(data.url); });
+    }
+    function previewCoachPhoto(url) {
+      var prev = document.getElementById('coach-photo-preview');
+      if (url && prev) {
+        prev.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
+      }
+    }
+    function updateCoachPhoto(url) {
+      var img = document.getElementById('coach-photo-img');
+      var ph = document.getElementById('coach-photo-placeholder');
+      if (img && url) {
+        img.src = url; img.style.display = 'block';
+        img.onerror = () => { img.style.display = 'none'; if(ph) ph.style.display = 'block'; };
+        if (ph) ph.style.display = 'none';
+      }
+    }
+    function saveCoachPhoto() {
+      var url = document.getElementById('coach-photo-url-inp').value.trim();
+      if (!url) { toast('❌ Ingresa un link'); return; }
+      fbSet('/cba_settings/coach_photo', { url: url }).then(() => { updateCoachPhoto(url); toast('✅ Foto guardada'); });
+    }
+
+    // TRADUCTOR BÁSICO
+    let currentLang = 'es';
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('lang-es').classList.toggle('active', lang === 'es');
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      document.querySelectorAll('[data-es]').forEach(el => el.textContent = lang === 'es' ? el.getAttribute('data-es') : el.getAttribute('data-en'));
+    }
+
+    // INICIALIZACIÓN
+    loadGymAddress();
+    loadCoachPhoto();
+  </script>
+</body>
+</html>
