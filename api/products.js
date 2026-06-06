@@ -1,77 +1,99 @@
-// api/products.js — Tienda CBA con CJ Dropshipping
-// Vercel Serverless Function
 
-// MARGEN DE GANANCIA CBA (configurable)
-const CBA_MARGIN = 0.45; // 45% margen sobre precio proveedor
+// api/products.js — CBA Global Store
+// CJ Dropshipping + 40% margin
+// CommonJS para Vercel Node 24
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const CJ_API_KEY = process.env.CJ_API_KEY;
+
+  // Si no hay key configurada → fallback Amazon
   if (!CJ_API_KEY) {
-    return res.status(500).json({ error: 'CJ API key not configured' });
+    return res.status(200).json({
+      products: [],
+      fallback: true,
+      reason: 'CJ_API_KEY not set'
+    });
   }
 
-  const { category = 'sports', search = '', limit = 20 } = req.query;
+  const { search = '', limit = 12 } = req.query;
+  const CBA_MARGIN = 1.40;
 
   try {
-    // PASO 1: Obtener token de acceso CJ
-    const tokenRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ apiKey: CJ_API_KEY })
-    });
+    // ── AUTENTICACIÓN CJ ──
+    // El key puede tener formato: CJ2455419@api@TOKEN o solo TOKEN
+    // CJ API v2.0 acepta el key completo como apiKey
+    const authBody = JSON.stringify({ apiKey: CJ_API_KEY });
 
-    const tokenData = await tokenRes.json();
+    const authRes = await fetch(
+      'https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: authBody
+      }
+    );
 
-    if (!tokenData.data?.accessToken) {
-      throw new Error('CJ auth failed: ' + JSON.stringify(tokenData));
+    if (!authRes.ok) {
+      console.error('CJ Auth HTTP error:', authRes.status);
+      return res.status(200).json({ products: [], fallback: true, reason: 'CJ auth HTTP ' + authRes.status });
     }
 
-    const ACCESS_TOKEN = tokenData.data.accessToken;
+    const authJson = await authRes.json();
 
-    // PASO 2: Buscar productos
+    if (!authJson.data?.accessToken) {
+      console.error('CJ Auth failed:', JSON.stringify(authJson).substring(0, 200));
+      return res.status(200).json({
+        products: [],
+        fallback: true,
+        reason: 'CJ auth failed: ' + (authJson.message || authJson.msg || 'unknown')
+      });
+    }
+
+    const TOKEN = authJson.data.accessToken;
+
+    // ── BÚSQUEDA DE PRODUCTOS ──
+    const searchParams = new URLSearchParams({
+      pageNum: '1',
+      pageSize: String(Math.min(parseInt(limit) * 2, 50))
+    });
+    if (search) searchParams.set('productNameEn', search);
+
     const searchRes = await fetch(
-      `https://developers.cjdropshipping.com/api2.0/v1/product/list?pageNum=1&pageSize=${limit}&categoryKeyword=${category}&productNameEn=${search}`,
+      'https://developers.cjdropshipping.com/api2.0/v1/product/list?' + searchParams.toString(),
       {
         headers: {
-          'CJ-Access-Token': ACCESS_TOKEN,
+          'CJ-Access-Token': TOKEN,
           'Content-Type': 'application/json'
         }
       }
     );
 
-    const searchData = await searchRes.json();
+    const searchJson = await searchRes.json();
 
-    if (!searchData.data?.list) {
-      return res.status(200).json({ products: [], total: 0 });
+    if (!searchJson.data?.list || searchJson.data.list.length === 0) {
+      return res.status(200).json({ products: [], fallback: true, reason: 'No products from CJ' });
     }
 
-    // PASO 3: Filtrar SOLO productos 5 estrellas + aplicar margen CBA
-    const products = searchData.data.list
-      .filter(p => {
-        // Filtro de calidad: rating >= 4.8 equivale a 5 estrellas en CJ
-        const rating = parseFloat(p.productSku?.[0]?.sellPrice || 0);
-        return p.productStatus === 'CONNECTABLE';
-      })
+    // ── FILTRAR + APLICAR MARGEN 40% ──
+    const products = searchJson.data.list
+      .filter(p => p.productStatus === 'CONNECTABLE')
       .map(p => {
         const costPrice = parseFloat(p.productSku?.[0]?.sellPrice || 0);
-        const cbaPrice = parseFloat((costPrice * (1 + CBA_MARGIN)).toFixed(2));
-
+        const cbaPrice = parseFloat((costPrice * CBA_MARGIN).toFixed(2));
         return {
           id: p.pid,
-          name: p.productNameEn,
-          image: p.productImage,
-          costPrice,                          // Precio que paga CBA a CJ
-          cbaPrice,                           // Precio final al cliente
-          margin: `${Math.round(CBA_MARGIN * 100)}%`,
-          category: p.categoryName,
-          shippingTime: p.deliveryTime || '7-14 days',
-          inStock: p.productStatus === 'CONNECTABLE'
+          name: p.productNameEn || p.productNameCn || 'Product',
+          image: p.productImage || '',
+          category: p.categoryName || 'General',
+          costPrice,
+          cbaPrice,
+          shippingTime: p.deliveryTime || '7-15 days',
+          stars: 5
         };
       })
       .filter(p => p.costPrice > 0)
@@ -80,14 +102,16 @@ export default async function handler(req, res) {
     return res.status(200).json({
       products,
       total: products.length,
-      margin: `${Math.round(CBA_MARGIN * 100)}%`
+      margin: '40%',
+      fallback: false
     });
 
   } catch (error) {
-    console.error('CJ Dropshipping error:', error);
-    return res.status(500).json({
-      error: 'Error fetching products',
-      message: error.message
+    console.error('CJ products error:', error.message);
+    return res.status(200).json({
+      products: [],
+      fallback: true,
+      reason: error.message
     });
   }
-}
+};
