@@ -1,4 +1,3 @@
-
 // api/products.js — CBA Global Store
 // CJ Dropshipping + 40% margin
 // CommonJS para Vercel Node 24
