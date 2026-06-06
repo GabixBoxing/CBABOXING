@@ -940,7 +940,7 @@ async function buscar() {
   status.style.display = 'block';
   grid.innerHTML = '';
   try {
-    var r = await fetch('/api/products?search=' + encodeURIComponent(q) + '&limit=12');
+    var r = await fetch('/api/products?search=' + encodeURIComponent(q) + '&limit=20');
     var data = await r.json();
     status.style.display = 'none';
     if (!data.products || data.products.length === 0) { showAmazon(q); return; }
@@ -953,20 +953,41 @@ async function buscar() {
 function renderProd(p, grid) {
   var card = document.createElement('div');
   card.className = 'pc';
+  // Image
   var img = document.createElement('img');
   img.src = p.image || '';
   img.alt = p.name;
+  img.onerror = function(){ this.style.display='none'; };
+  // Body
   var body = document.createElement('div');
   body.className = 'pc-body';
   var precio = p.cbaPrice ? ('$' + p.cbaPrice.toFixed(2)) : '--';
-  body.innerHTML = '<div class="pc-stars">⭐⭐⭐⭐⭐</div>'
-    + '<div class="pc-name">' + p.name + '</div>'
-    + '<div class="pc-price">' + precio + '</div>'
-    + '<div class="pc-ship">📦 ' + (p.shippingTime || '7-15 días') + '</div>';
+  // Stars
+  var stars = document.createElement('div');
+  stars.className = 'pc-stars';
+  stars.textContent = '⭐⭐⭐⭐⭐';
+  // Name — textContent avoids HTML entity issues
+  var nameEl = document.createElement('div');
+  nameEl.className = 'pc-name';
+  nameEl.textContent = p.name;
+  // Price
+  var priceEl = document.createElement('div');
+  priceEl.className = 'pc-price';
+  priceEl.textContent = precio;
+  // Shipping
+  var shipEl = document.createElement('div');
+  shipEl.className = 'pc-ship';
+  shipEl.textContent = '📦 ' + (p.shippingTime || '7-15 días');
+  // Buy button
   var btn = document.createElement('button');
   btn.className = 'pc-buy';
   btn.textContent = 'COMPRAR →';
   btn.onclick = function() { pagarStripe(p.name, p.costPrice || 0, p.image || ''); };
+  // Assemble
+  body.appendChild(stars);
+  body.appendChild(nameEl);
+  body.appendChild(priceEl);
+  body.appendChild(shipEl);
   body.appendChild(btn);
   card.appendChild(img);
   card.appendChild(body);
