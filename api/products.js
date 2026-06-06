@@ -1,5 +1,5 @@
-// api/products.js — CBA Global Store v3
-// Con logging detallado para diagnosticar CJ
+// api/products.js — CBA Global Store v4 FIXED
+// Auth confirmed working — filter relaxed
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,8 +16,7 @@ module.exports = async function handler(req, res) {
   const CBA_MARGIN = 1.40;
 
   try {
-    // ── PASO 1: AUTENTICACIÓN ──
-    // CJ acepta el key completo: CJ2455419@api@TOKEN
+    // AUTH
     const authRes = await fetch(
       'https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',
       {
@@ -26,82 +25,60 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({ apiKey: CJ_API_KEY })
       }
     );
-
     const authJson = await authRes.json();
-    console.log('CJ Auth response:', JSON.stringify(authJson).substring(0, 300));
-
     if (!authJson.data?.accessToken) {
-      // Intento 2: solo el token después del último @
-      const parts = CJ_API_KEY.split('@');
-      const tokenOnly = parts[parts.length - 1];
-      console.log('Trying token only:', tokenOnly.substring(0, 8) + '...');
-
-      const auth2 = await fetch(
-        'https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ apiKey: tokenOnly })
-        }
-      );
-      const auth2Json = await auth2.json();
-      console.log('CJ Auth2 response:', JSON.stringify(auth2Json).substring(0, 300));
-
-      if (!auth2Json.data?.accessToken) {
-        return res.status(200).json({
-          products: [],
-          fallback: true,
-          reason: 'CJ_AUTH_FAILED',
-          cjMessage: authJson.message || authJson.msg || 'unknown'
-        });
-      }
-      // Use token from second attempt
-      var TOKEN = auth2Json.data.accessToken;
-    } else {
-      var TOKEN = authJson.data.accessToken;
+      return res.status(200).json({ products: [], fallback: true, reason: 'AUTH_FAILED' });
     }
+    const TOKEN = authJson.data.accessToken;
 
-    // ── PASO 2: BÚSQUEDA ──
-    const url = `https://developers.cjdropshipping.com/api2.0/v1/product/list?pageNum=1&pageSize=${parseInt(limit)*2}&productNameEn=${encodeURIComponent(search)}`;
-    const searchRes = await fetch(url, {
-      headers: { 'CJ-Access-Token': TOKEN, 'Content-Type': 'application/json' }
-    });
-
+    // SEARCH
+    const searchRes = await fetch(
+      `https://developers.cjdropshipping.com/api2.0/v1/product/list?pageNum=1&pageSize=30&productNameEn=${encodeURIComponent(search)}`,
+      { headers: { 'CJ-Access-Token': TOKEN, 'Content-Type': 'application/json' } }
+    );
     const searchJson = await searchRes.json();
-    console.log('CJ Search total:', searchJson.data?.total, 'list count:', searchJson.data?.list?.length);
 
     if (!searchJson.data?.list?.length) {
-      return res.status(200).json({
-        products: [],
-        fallback: true,
-        reason: 'NO_PRODUCTS',
-        cjTotal: searchJson.data?.total || 0
-      });
+      return res.status(200).json({ products: [], fallback: true, reason: 'NO_RESULTS' });
     }
 
-    // ── PASO 3: FILTRAR + MARGEN 40% ──
+    // FILTER + MARGIN — relaxed filter, include all valid products
     const products = searchJson.data.list
-      .filter(p => p.productStatus === 'CONNECTABLE')
       .map(p => {
-        const cost = parseFloat(p.productSku?.[0]?.sellPrice || 0);
+        // Try multiple price fields
+        const sku = p.productSku?.[0] || p.variants?.[0] || {};
+        const cost = parseFloat(
+          sku.sellPrice || sku.price || p.sellPrice || p.price || 0
+        );
+        const cbaPrice = parseFloat((cost * CBA_MARGIN).toFixed(2));
+
+        // Clean English name — remove non-latin chars if needed
+        const name = (p.productNameEn || p.productNameCn || 'Product').substring(0, 80);
+
         return {
           id: p.pid,
-          name: p.productNameEn || p.productNameCn || 'Product',
+          name,
           image: p.productImage || '',
           category: p.categoryName || 'General',
           costPrice: cost,
-          cbaPrice: parseFloat((cost * CBA_MARGIN).toFixed(2)),
+          cbaPrice,
           shippingTime: p.deliveryTime || '7-15 days',
+          status: p.productStatus || 'AVAILABLE',
           stars: 5
         };
       })
-      .filter(p => p.costPrice > 0)
+      // Only skip products with no price at all
+      .filter(p => p.cbaPrice > 0)
       .slice(0, parseInt(limit));
 
-    return res.status(200).json({ products, total: products.length, fallback: false });
+    return res.status(200).json({
+      products,
+      total: products.length,
+      margin: '40%',
+      fallback: false
+    });
 
   } catch (error) {
-    console.error('CJ Error:', error.message);
     return res.status(200).json({ products: [], fallback: true, reason: error.message });
   }
 };
