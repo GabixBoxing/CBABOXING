@@ -1,6 +1,5 @@
-// api/products.js — CBA Global Store
-// CJ Dropshipping + 40% margin
-// CommonJS para Vercel Node 24
+// api/products.js — CBA Global Store v3
+// Con logging detallado para diagnosticar CJ
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,88 +8,89 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const CJ_API_KEY = process.env.CJ_API_KEY;
-
-  // Si no hay key configurada → fallback Amazon
   if (!CJ_API_KEY) {
-    return res.status(200).json({
-      products: [],
-      fallback: true,
-      reason: 'CJ_API_KEY not set'
-    });
+    return res.status(200).json({ products: [], fallback: true, reason: 'NO_KEY' });
   }
 
-  const { search = '', limit = 12 } = req.query;
+  const { search = 'boxing', limit = 12 } = req.query;
   const CBA_MARGIN = 1.40;
 
   try {
-    // ── AUTENTICACIÓN CJ ──
-    // El key puede tener formato: CJ2455419@api@TOKEN o solo TOKEN
-    // CJ API v2.0 acepta el key completo como apiKey
-    const authBody = JSON.stringify({ apiKey: CJ_API_KEY });
-
+    // ── PASO 1: AUTENTICACIÓN ──
+    // CJ acepta el key completo: CJ2455419@api@TOKEN
     const authRes = await fetch(
       'https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: authBody
+        body: JSON.stringify({ apiKey: CJ_API_KEY })
       }
     );
 
-    if (!authRes.ok) {
-      console.error('CJ Auth HTTP error:', authRes.status);
-      return res.status(200).json({ products: [], fallback: true, reason: 'CJ auth HTTP ' + authRes.status });
-    }
-
     const authJson = await authRes.json();
+    console.log('CJ Auth response:', JSON.stringify(authJson).substring(0, 300));
 
     if (!authJson.data?.accessToken) {
-      console.error('CJ Auth failed:', JSON.stringify(authJson).substring(0, 200));
+      // Intento 2: solo el token después del último @
+      const parts = CJ_API_KEY.split('@');
+      const tokenOnly = parts[parts.length - 1];
+      console.log('Trying token only:', tokenOnly.substring(0, 8) + '...');
+
+      const auth2 = await fetch(
+        'https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey: tokenOnly })
+        }
+      );
+      const auth2Json = await auth2.json();
+      console.log('CJ Auth2 response:', JSON.stringify(auth2Json).substring(0, 300));
+
+      if (!auth2Json.data?.accessToken) {
+        return res.status(200).json({
+          products: [],
+          fallback: true,
+          reason: 'CJ_AUTH_FAILED',
+          cjMessage: authJson.message || authJson.msg || 'unknown'
+        });
+      }
+      // Use token from second attempt
+      var TOKEN = auth2Json.data.accessToken;
+    } else {
+      var TOKEN = authJson.data.accessToken;
+    }
+
+    // ── PASO 2: BÚSQUEDA ──
+    const url = `https://developers.cjdropshipping.com/api2.0/v1/product/list?pageNum=1&pageSize=${parseInt(limit)*2}&productNameEn=${encodeURIComponent(search)}`;
+    const searchRes = await fetch(url, {
+      headers: { 'CJ-Access-Token': TOKEN, 'Content-Type': 'application/json' }
+    });
+
+    const searchJson = await searchRes.json();
+    console.log('CJ Search total:', searchJson.data?.total, 'list count:', searchJson.data?.list?.length);
+
+    if (!searchJson.data?.list?.length) {
       return res.status(200).json({
         products: [],
         fallback: true,
-        reason: 'CJ auth failed: ' + (authJson.message || authJson.msg || 'unknown')
+        reason: 'NO_PRODUCTS',
+        cjTotal: searchJson.data?.total || 0
       });
     }
 
-    const TOKEN = authJson.data.accessToken;
-
-    // ── BÚSQUEDA DE PRODUCTOS ──
-    const searchParams = new URLSearchParams({
-      pageNum: '1',
-      pageSize: String(Math.min(parseInt(limit) * 2, 50))
-    });
-    if (search) searchParams.set('productNameEn', search);
-
-    const searchRes = await fetch(
-      'https://developers.cjdropshipping.com/api2.0/v1/product/list?' + searchParams.toString(),
-      {
-        headers: {
-          'CJ-Access-Token': TOKEN,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    const searchJson = await searchRes.json();
-
-    if (!searchJson.data?.list || searchJson.data.list.length === 0) {
-      return res.status(200).json({ products: [], fallback: true, reason: 'No products from CJ' });
-    }
-
-    // ── FILTRAR + APLICAR MARGEN 40% ──
+    // ── PASO 3: FILTRAR + MARGEN 40% ──
     const products = searchJson.data.list
       .filter(p => p.productStatus === 'CONNECTABLE')
       .map(p => {
-        const costPrice = parseFloat(p.productSku?.[0]?.sellPrice || 0);
-        const cbaPrice = parseFloat((costPrice * CBA_MARGIN).toFixed(2));
+        const cost = parseFloat(p.productSku?.[0]?.sellPrice || 0);
         return {
           id: p.pid,
           name: p.productNameEn || p.productNameCn || 'Product',
           image: p.productImage || '',
           category: p.categoryName || 'General',
-          costPrice,
-          cbaPrice,
+          costPrice: cost,
+          cbaPrice: parseFloat((cost * CBA_MARGIN).toFixed(2)),
           shippingTime: p.deliveryTime || '7-15 days',
           stars: 5
         };
@@ -98,19 +98,10 @@ module.exports = async function handler(req, res) {
       .filter(p => p.costPrice > 0)
       .slice(0, parseInt(limit));
 
-    return res.status(200).json({
-      products,
-      total: products.length,
-      margin: '40%',
-      fallback: false
-    });
+    return res.status(200).json({ products, total: products.length, fallback: false });
 
   } catch (error) {
-    console.error('CJ products error:', error.message);
-    return res.status(200).json({
-      products: [],
-      fallback: true,
-      reason: error.message
-    });
+    console.error('CJ Error:', error.message);
+    return res.status(200).json({ products: [], fallback: true, reason: error.message });
   }
 };
