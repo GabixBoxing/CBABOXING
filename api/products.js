@@ -35,6 +35,39 @@ const ES_EN = {
   // General
   'barato':'cheap affordable','económico':'affordable',
   'bueno':'good quality','mejor':'best quality',
+  // Más hogar
+  'toalla':'towel','toallas':'towels','sabana':'bed sheet',
+  'cojin':'cushion pillow','cojín':'cushion pillow',
+  'reloj de pared':'wall clock','cuadro':'wall art picture',
+  'organizador':'organizer storage','estante':'shelf rack',
+  'canasta':'basket storage','cesta':'basket',
+  // Más tecnología
+  'cargador':'charger','cargador celular':'phone charger',
+  'cable usb':'usb cable','bateria portatil':'power bank',
+  'batería portátil':'power bank','memoria usb':'usb flash drive',
+  'funda celular':'phone case','protector pantalla':'screen protector',
+  // Más ropa
+  'medias':'socks','calcetines':'socks','cinturon':'belt',
+  'cinturón':'belt','guantes invierno':'winter gloves',
+  'bufanda':'scarf','gorra beisbol':'baseball cap',
+  // Más deportes
+  'traje de baño':'swimsuit','bañador':'swimsuit',
+  'ropa deportiva':'sportswear','leggins':'leggings',
+  'short deportivo':'sports shorts','camiseta deportiva':'sports shirt',
+  'mochila':'backpack','maleta':'suitcase luggage',
+  // Jardín y exterior
+  'maceta':'flower pot planter','planta artificial':'artificial plant',
+  'silla de jardin':'garden chair','paraguas':'umbrella',
+  // Mascotas
+  'comida perro':'dog food','collar perro':'dog collar',
+  'juguete perro':'dog toy','cama perro':'dog bed',
+  'accesorios gato':'cat accessories',
+  // Bebé
+  'ropa bebe':'baby clothes','pañal':'diaper',
+  'biberón':'baby bottle','cochecito':'baby stroller',
+  // Oficina
+  'lapicero':'pen pencil','cuaderno':'notebook',
+  'escritorio':'desk','silla oficina':'office chair',
 };
 
 function translateQuery(q) {
