@@ -1406,34 +1406,47 @@ function changeQty(delta) {
 
 function confirmBuy() {
   var p = _pm.product;
-  if (!p) return;
+  if (!p) { alert('Error: no hay producto seleccionado'); return; }
+
   var variant = _pm.selectedVariant || (_pm.variants.length > 0 ? _pm.variants[0] : null);
-  var cost = variant ? variant.costPrice : (p.costPrice || 0);
-  var price = variant ? variant.price : (p.cbaPrice || 0);
-  var name = p.name + (_pm.selectedColor ? ' - ' + _pm.selectedColor : '') + (_pm.selectedSize ? ' / ' + _pm.selectedSize : '');
+  var cost = parseFloat(variant ? variant.costPrice : (p.costPrice || 0));
+  var name = p.name;
+  if (_pm.selectedColor) name += ' - ' + _pm.selectedColor;
+  if (_pm.selectedSize) name += ' / ' + _pm.selectedSize;
+
+  if (!cost || cost <= 0) {
+    cost = parseFloat(p.costPrice || p.cbaPrice / 1.40 || 1);
+  }
 
   var btn = document.getElementById('pm-buy-btn');
-  btn.textContent = '⏳ PROCESANDO...';
+  btn.innerHTML = '⏳ PROCESANDO...';
   btn.disabled = true;
 
   fetch('/api/checkout', {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
+    headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
-      productName: name,
+      productName: name.substring(0, 100),
       costPrice: cost,
-      image: p.image || '',
-      quantity: _pm.qty
+      image: (p.image || '').substring(0, 200),
+      quantity: _pm.qty || 1
     })
   })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    if (d.url) { window.location.href = d.url; }
-    else { btn.textContent = 'COMPRAR →'; btn.disabled = false; alert('Error al procesar. Intenta de nuevo.'); }
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.url) {
+      window.location.href = d.url;
+    } else {
+      btn.innerHTML = 'COMPRAR →';
+      btn.disabled = false;
+      alert('Error: ' + (d.error || 'No se pudo procesar el pago. Intenta de nuevo.'));
+    }
   })
-  .catch(function(){
-    btn.textContent = 'COMPRAR →'; btn.disabled = false;
-    alert('Error de conexión. Intenta de nuevo.');
+  .catch(function(e) {
+    btn.innerHTML = 'COMPRAR →';
+    btn.disabled = false;
+    alert('Error de conexión. Por favor intenta de nuevo.');
+    console.error('Checkout error:', e);
   });
 }
 
