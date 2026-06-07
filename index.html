@@ -1007,6 +1007,12 @@ function showAmazon(q) {
 
 // ─── STRIPE PAYMENT ───
 async function pagarStripe(nombre, costPrice, imagen) {
+  // Find the button that was clicked
+  var btn = event.currentTarget;
+  var orig = btn.textContent;
+  btn.textContent = '⏳ PROCESANDO...';
+  btn.disabled = true;
+
   try {
     var r = await fetch('/api/checkout', {
       method: 'POST',
@@ -1014,11 +1020,22 @@ async function pagarStripe(nombre, costPrice, imagen) {
       body: JSON.stringify({productName: nombre, costPrice: costPrice, image: imagen, quantity: 1})
     });
     var data = await r.json();
-    if (data.url) { window.location.href = data.url; return; }
-    throw new Error('No URL from checkout');
+
+    if (data.url) {
+      // SUCCESS — go to Stripe checkout
+      window.location.href = data.url;
+      return;
+    }
+
+    // Stripe returned error
+    btn.textContent = orig;
+    btn.disabled = false;
+    alert('Error al procesar el pago. Por favor intenta de nuevo.');
+
   } catch(e) {
-    var msg = 'Hola Coach, quiero comprar: ' + nombre + '. ¿Puedes ayudarme?';
-    window.open('https://wa.me/17027234009?text=' + encodeURIComponent(msg), '_blank');
+    btn.textContent = orig;
+    btn.disabled = false;
+    alert('Error de conexión. Por favor intenta de nuevo.');
   }
 }
 // Payment return handler
