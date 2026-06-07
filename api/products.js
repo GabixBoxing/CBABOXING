@@ -1,85 +1,86 @@
-// api/products.js — CBA Global Store v5
-// 20 productos + traducción ES→EN automática
+// api/products.js — CBA Global Store v6
+// Filtro: boxeo/fitness por defecto + búsqueda global
+// POD (Print on Demand) ready para productos CBA personalizados
 
-// Diccionario básico ES → EN para búsquedas
+// ═══ POD PRODUCTS — Agrega los PIDs de tus productos CBA aquí ═══
+// Cuando tengas productos con tu marca en CJ, agrega sus IDs:
+// const CBA_POD_PRODUCTS = ['pid_001', 'pid_002', 'pid_003'];
+const CBA_POD_PRODUCTS = []; // Lista vacía por ahora — llenar cuando tengas POD
+
+// ═══ CATEGORÍAS DEPORTIVAS PRIORITARIAS ═══
+const SPORTS_KEYWORDS = [
+  'boxing', 'gloves', 'punching bag', 'jump rope', 'wraps', 'mouthguard',
+  'headgear', 'fitness', 'gym', 'workout', 'dumbbells', 'weights', 'barbell',
+  'resistance band', 'yoga mat', 'sports', 'athletic', 'training', 'exercise',
+  'boxing shoes', 'sports bag', 'protein', 'supplement', 'running shoes',
+  'shorts', 'compression', 'knee pad', 'ankle support', 'speed bag'
+];
+
+// ═══ TRADUCCIÓN ES → EN ═══
 const ES_EN = {
+  // Boxeo y artes marciales
+  'guantes':'boxing gloves','guantes de boxeo':'boxing gloves',
+  'casco de boxeo':'boxing headgear','casco boxeo':'boxing headgear',
+  'vendas':'hand wraps boxing','vendas de boxeo':'boxing hand wraps',
+  'saco de boxeo':'punching bag','costal':'punching bag',
+  'protector bucal':'mouthguard','botas de boxeo':'boxing shoes',
+  'short de boxeo':'boxing shorts','uniforme boxeo':'boxing uniform',
+  'guantes mma':'mma gloves','kick boxing':'kickboxing gear',
+  // Fitness y gym
+  'pesas':'dumbbells weights','mancuernas':'dumbbells',
+  'barra':'barbell','disco de pesas':'weight plate',
+  'cuerda saltar':'jump rope','soguilla':'jump rope',
+  'colchoneta':'yoga mat exercise mat','bandas elasticas':'resistance bands',
+  'banda elastica':'resistance band','liga elastica':'resistance band',
+  'ropa gym':'gym clothing','ropa deportiva':'sportswear',
+  'zapatos deportivos':'sports shoes','tenis':'sneakers athletic',
+  'short deportivo':'sports shorts','camiseta deportiva':'sports shirt',
+  'leggins':'leggings sports','malla':'leggings',
+  'guantes gym':'gym gloves','faja gym':'weightlifting belt',
+  'rodillera':'knee pad support','tobillera':'ankle support',
+  'bolsa gym':'gym bag sports bag','mochila deportiva':'sports backpack',
+  'proteina':'protein supplement','suplemento':'supplement',
+  'botella agua':'water bottle sports','termo':'thermos water bottle',
+  'cronometro':'stopwatch timer sports','timer boxeo':'boxing timer',
   // Hogar
   'espejo':'mirror','espejos':'mirror','espejo de baño':'bathroom mirror',
-  'sofa':'sofa couch','sofá':'sofa couch','silla':'chair','sillas':'chairs',
-  'mesa':'table','cama':'bed','almohada':'pillow','sábana':'bed sheet',
-  'lámpara':'lamp','lampara':'lamp','cortina':'curtain','alfombra':'rug carpet',
-  'nevera':'refrigerator','refrigerador':'refrigerator','microondas':'microwave',
-  'licuadora':'blender','cafetera':'coffee maker','plancha':'iron clothes',
-  'ventilador':'fan','aire acondicionado':'air conditioner',
-  // Ropa y moda
-  'zapatos':'shoes','tenis':'sneakers','botas':'boots','sandalias':'sandals',
-  'camisa':'shirt','camiseta':'t-shirt','pantalon':'pants','pantalón':'pants',
-  'vestido':'dress','falda':'skirt','chaqueta':'jacket','abrigo':'coat',
-  'bolso':'handbag','cartera':'wallet purse','gorra':'cap hat',
+  'sofa':'sofa couch','sofá':'sofa couch','silla':'chair',
+  'mesa':'table','cama':'bed','almohada':'pillow','lampara':'lamp',
+  'cortina':'curtain','alfombra':'rug carpet','nevera':'refrigerator',
+  'microondas':'microwave','licuadora':'blender','cafetera':'coffee maker',
+  'ventilador':'fan','toalla':'towel','organizador':'organizer storage',
   // Tecnología
-  'celular':'smartphone phone','teléfono':'smartphone','auriculares':'headphones',
-  'audífonos':'earbuds headphones','televisor':'television tv','reloj':'watch',
-  'cámara':'camera','computadora':'laptop computer','tablet':'tablet',
-  // Deportes
-  'guantes':'boxing gloves','guantes de boxeo':'boxing gloves',
-  'cuerda saltar':'jump rope','soguilla':'jump rope','pesas':'weights dumbbells',
-  'mancuernas':'dumbbells','bicicleta':'bicycle bike','colchoneta':'yoga mat',
-  // Belleza
-  'perfume':'perfume cologne','crema':'face cream','maquillaje':'makeup',
-  'shampoo':'shampoo','labial':'lipstick','base':'foundation makeup',
-  // Niños
-  'juguete':'toy','juguetes':'toys','muñeca':'doll','carrito':'toy car',
+  'celular':'smartphone','auriculares':'headphones','audífonos':'earbuds',
+  'televisor':'television tv','reloj':'watch','cámara':'camera',
+  'cargador':'charger','bateria portatil':'power bank','tablet':'tablet',
+  // Ropa y moda
+  'zapatos':'shoes','tenis casual':'sneakers casual','botas':'boots',
+  'camisa':'shirt','camiseta':'t-shirt','pantalon':'pants',
+  'vestido':'dress','chaqueta':'jacket','bolso':'handbag',
+  'gorra':'cap hat','perfume':'perfume','ropa':'clothing',
   // Cocina
-  'olla':'pot cooking','sartén':'frying pan','cuchillo':'knife',
-  'tenedor':'fork','vaso':'glass cup','plato':'plate dish',
+  'olla':'cooking pot','sartan':'frying pan','cuchillo':'knife',
+  'vaso':'glass cup','plato':'plate dish','cocina':'kitchen',
   // General
-  'barato':'cheap affordable','económico':'affordable',
-  'bueno':'good quality','mejor':'best quality',
-  // Más hogar
-  'toalla':'towel','toallas':'towels','sabana':'bed sheet',
-  'cojin':'cushion pillow','cojín':'cushion pillow',
-  'reloj de pared':'wall clock','cuadro':'wall art picture',
-  'organizador':'organizer storage','estante':'shelf rack',
-  'canasta':'basket storage','cesta':'basket',
-  // Más tecnología
-  'cargador':'charger','cargador celular':'phone charger',
-  'cable usb':'usb cable','bateria portatil':'power bank',
-  'batería portátil':'power bank','memoria usb':'usb flash drive',
-  'funda celular':'phone case','protector pantalla':'screen protector',
-  // Más ropa
-  'medias':'socks','calcetines':'socks','cinturon':'belt',
-  'cinturón':'belt','guantes invierno':'winter gloves',
-  'bufanda':'scarf','gorra beisbol':'baseball cap',
-  // Más deportes
-  'traje de baño':'swimsuit','bañador':'swimsuit',
-  'ropa deportiva':'sportswear','leggins':'leggings',
-  'short deportivo':'sports shorts','camiseta deportiva':'sports shirt',
-  'mochila':'backpack','maleta':'suitcase luggage',
-  // Jardín y exterior
-  'maceta':'flower pot planter','planta artificial':'artificial plant',
-  'silla de jardin':'garden chair','paraguas':'umbrella',
-  // Mascotas
-  'comida perro':'dog food','collar perro':'dog collar',
-  'juguete perro':'dog toy','cama perro':'dog bed',
-  'accesorios gato':'cat accessories',
-  // Bebé
-  'ropa bebe':'baby clothes','pañal':'diaper',
-  'biberón':'baby bottle','cochecito':'baby stroller',
-  // Oficina
-  'lapicero':'pen pencil','cuaderno':'notebook',
-  'escritorio':'desk','silla oficina':'office chair',
+  'barato':'affordable price','económico':'affordable',
+  'bueno':'quality good','mejor':'best quality',
+  'mujer':'women','hombre':'men','niño':'kids children','bebe':'baby',
+  'mascota':'pet','perro':'dog','gato':'cat',
+  'jardin':'garden outdoor','oficina':'office',
 };
 
-function translateQuery(q) {
+function translateES(q) {
   const lower = q.toLowerCase().trim();
-  // Exact match
   if (ES_EN[lower]) return ES_EN[lower];
-  // Partial match
   for (const [es, en] of Object.entries(ES_EN)) {
     if (lower.includes(es)) return en;
   }
-  // Return original (might already be English)
   return q;
+}
+
+function isSportsRelated(name) {
+  const n = (name || '').toLowerCase();
+  return SPORTS_KEYWORDS.some(k => n.includes(k));
 }
 
 module.exports = async function handler(req, res) {
@@ -93,33 +94,43 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ products: [], fallback: true, reason: 'NO_KEY' });
   }
 
-  const { search = 'boxing', limit = 20 } = req.query;
+  const { search = '', limit = 20, mode = 'auto' } = req.query;
+
+  // mode=sports → filter to sports only
+  // mode=all → show everything
+  // mode=auto → sports first, then global if needed
+  const targetLimit = Math.max(parseInt(limit), 20);
   const CBA_MARGIN = 1.40;
 
-  // Translate ES→EN if needed
-  const searchEN = translateQuery(search);
-  const targetLimit = Math.max(parseInt(limit), 20);
+  const searchEN = translateES(search) || 'boxing fitness';
+  const isSportsSearch = search === '' ||
+    SPORTS_KEYWORDS.some(k => searchEN.toLowerCase().includes(k)) ||
+    mode === 'sports';
 
   try {
-    // AUTH
+    // ── AUTH ──
     const authRes = await fetch(
       'https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apiKey: CJ_API_KEY })
-      }
+      { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({apiKey:CJ_API_KEY}) }
     );
     const authJson = await authRes.json();
     if (!authJson.data?.accessToken) {
-      return res.status(200).json({ products: [], fallback: true, reason: 'AUTH_FAILED' });
+      return res.status(200).json({ products:[], fallback:true, reason:'AUTH_FAILED' });
     }
     const TOKEN = authJson.data.accessToken;
 
-    // SEARCH — request 50 to ensure we get 20 after filtering
+    // ── FETCH POD PRODUCTS FIRST (if any) ──
+    let podProducts = [];
+    if (CBA_POD_PRODUCTS.length > 0) {
+      // TODO: Fetch your custom CBA branded products from CJ
+      // This will be implemented when POD products are ready
+      // podProducts = await fetchPODProducts(TOKEN, CBA_POD_PRODUCTS);
+    }
+
+    // ── SEARCH CJ ──
     const params = new URLSearchParams({
       pageNum: '1',
-      pageSize: '50',
+      pageSize: '60',
       productNameEn: searchEN
     });
 
@@ -128,15 +139,12 @@ module.exports = async function handler(req, res) {
       { headers: { 'CJ-Access-Token': TOKEN, 'Content-Type': 'application/json' } }
     );
     const searchJson = await searchRes.json();
-
-    // If primary search returns nothing, try broader search
     let list = searchJson.data?.list || [];
 
+    // If no results, try original Spanish term
     if (list.length === 0 && searchEN !== search) {
-      // Try original term too
-      const params2 = new URLSearchParams({ pageNum:'1', pageSize:'50', productNameEn: search });
       const r2 = await fetch(
-        `https://developers.cjdropshipping.com/api2.0/v1/product/list?${params2}`,
+        `https://developers.cjdropshipping.com/api2.0/v1/product/list?pageNum=1&pageSize=60&productNameEn=${encodeURIComponent(search)}`,
         { headers: { 'CJ-Access-Token': TOKEN, 'Content-Type': 'application/json' } }
       );
       const j2 = await r2.json();
@@ -144,45 +152,57 @@ module.exports = async function handler(req, res) {
     }
 
     if (list.length === 0) {
-      return res.status(200).json({
-        products: [],
-        fallback: true,
-        reason: 'NO_RESULTS',
-        searchedFor: searchEN
-      });
+      return res.status(200).json({ products:[], fallback:true, reason:'NO_RESULTS', searchedFor:searchEN });
     }
 
-    // PROCESS + APPLY 40% MARGIN
-    const products = list
-      .map(p => {
-        const sku = p.productSku?.[0] || p.variants?.[0] || {};
-        const cost = parseFloat(sku.sellPrice || sku.price || p.sellPrice || p.price || 0);
-        const cbaPrice = parseFloat((cost * CBA_MARGIN).toFixed(2));
-        return {
-          id: p.pid,
-          name: (p.productNameEn || p.productNameCn || 'Product').substring(0, 80),
-          image: p.productImage || '',
-          category: p.categoryName || 'General',
-          costPrice: cost,
-          cbaPrice,
-          shippingTime: p.deliveryTime || '7-15 days',
-          stars: 5
-        };
-      })
-      .filter(p => p.cbaPrice > 0)
-      .slice(0, targetLimit);
+    // ── FILTER + SORT + MARGIN ──
+    let products = list.map(p => {
+      const sku = p.productSku?.[0] || {};
+      const cost = parseFloat(sku.sellPrice || sku.price || p.sellPrice || 0);
+      const cbaPrice = parseFloat((cost * CBA_MARGIN).toFixed(2));
+      const name = (p.productNameEn || p.productNameCn || '').substring(0, 80);
+      const isSports = isSportsRelated(name) || isSportsRelated(p.categoryName);
+
+      return {
+        id: p.pid,
+        name,
+        image: p.productImage || '',
+        category: p.categoryName || 'General',
+        costPrice: cost,
+        cbaPrice,
+        shippingTime: p.deliveryTime || '7-15 days',
+        stars: 5,
+        isSports,
+        isPOD: false  // Will be true for custom CBA products
+      };
+    }).filter(p => p.cbaPrice > 0);
+
+    // Sort: POD first → Sports first → then rest
+    products.sort((a, b) => {
+      if (a.isPOD && !b.isPOD) return -1;
+      if (!a.isPOD && b.isPOD) return 1;
+      if (isSportsSearch) {
+        if (a.isSports && !b.isSports) return -1;
+        if (!a.isSports && b.isSports) return 1;
+      }
+      return 0;
+    });
+
+    // POD products go first
+    const finalProducts = [...podProducts, ...products].slice(0, targetLimit);
 
     return res.status(200).json({
-      products,
-      total: products.length,
+      products: finalProducts,
+      total: finalProducts.length,
       searchedFor: searchEN,
       originalSearch: search,
       translated: searchEN !== search,
       margin: '40%',
-      fallback: false
+      fallback: false,
+      podReady: true  // Flag indicating POD support is configured
     });
 
   } catch (error) {
-    return res.status(200).json({ products: [], fallback: true, reason: error.message });
+    return res.status(200).json({ products:[], fallback:true, reason:error.message });
   }
 };
