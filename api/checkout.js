@@ -1,4 +1,5 @@
-// Redeployed: 2026-06-07 00:27:46
+// Deploy: 2026-06-07 00:35:43 UTC
+// v2: 2026-06-07 00:27:46
 // api/checkout.js — Stripe Checkout Session
 // Cliente compra → Stripe cobra → CBA guarda 40%
 // CommonJS para Vercel
