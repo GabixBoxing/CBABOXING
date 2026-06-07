@@ -1,10 +1,5 @@
-// Deploy 00:40:52: 2026-06-07 00:35:43 UTC
-// v3 00:40:52: 2026-06-07 00:27:46
-// api/checkout.js — Stripe Checkout Session
-// Cliente compra → Stripe cobra → CBA guarda 40%
-// CommonJS para Vercel
-
-const CBA_MARGIN = 0.40;
+// api/checkout.js — Stripe Checkout v2
+const CBA_MARGIN = 1.40;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,42 +9,36 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
-  if (!STRIPE_SECRET) {
-    return res.status(500).json({ error: 'Stripe not configured' });
-  }
+  if (!STRIPE_SECRET) return res.status(500).json({ error: 'Stripe not configured' });
 
   const { productName, costPrice, quantity = 1, image } = req.body || {};
   if (!productName || !costPrice) {
-    return res.status(400).json({ error: 'Missing product info' });
+    return res.status(400).json({ error: 'Missing productName or costPrice' });
   }
 
-  // REGLA 40% CBA
-  // costPrice = lo que CJ cobra a CBA
-  // cbaPrice  = lo que el cliente paga
-  // profit    = lo que CBA se queda
-  const cbaPrice = parseFloat((costPrice * (1 + CBA_MARGIN)).toFixed(2));
-  const unitAmountCents = Math.round(cbaPrice * 100);
+  const cbaPrice = parseFloat((parseFloat(costPrice) * CBA_MARGIN).toFixed(2));
+  const unitCents = Math.round(cbaPrice * 100);
+
+  if (unitCents < 50) {
+    return res.status(400).json({ error: 'Price too low (minimum $0.50)' });
+  }
 
   try {
-    // Crear Stripe Checkout Session (página de pago alojada por Stripe)
-    const body = new URLSearchParams({
+    const params = new URLSearchParams({
       'mode': 'payment',
       'success_url': 'https://cbagym.com?payment=success',
       'cancel_url': 'https://cbagym.com?payment=cancelled',
       'line_items[0][price_data][currency]': 'usd',
-      'line_items[0][price_data][product_data][name]': productName,
-      'line_items[0][price_data][unit_amount]': String(unitAmountCents),
-      'line_items[0][quantity]': String(quantity),
-      'metadata[product]': productName,
-      'metadata[cost_price]': String(costPrice),
+      'line_items[0][price_data][product_data][name]': productName.substring(0, 100),
+      'line_items[0][price_data][unit_amount]': String(unitCents),
+      'line_items[0][quantity]': String(parseInt(quantity)),
+      'metadata[product]': productName.substring(0, 100),
+      'metadata[cost]': String(costPrice),
       'metadata[cba_price]': String(cbaPrice),
-      'metadata[cba_profit]': String(parseFloat((cbaPrice - costPrice).toFixed(2))),
       'metadata[margin]': '40%',
     });
 
-    if (image) {
-      body.append('line_items[0][price_data][product_data][images][0]', image);
-    }
+    if (image) params.append('line_items[0][price_data][product_data][images][0]', image);
 
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
@@ -57,24 +46,21 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${STRIPE_SECRET}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: body.toString()
+      body: params.toString()
     });
 
     const session = await stripeRes.json();
-
-    if (session.error) {
-      throw new Error(session.error.message);
-    }
+    if (session.error) throw new Error(session.error.message);
 
     return res.status(200).json({
       url: session.url,
       sessionId: session.id,
       amount: cbaPrice,
-      profit: parseFloat((cbaPrice - costPrice).toFixed(2))
+      profit: parseFloat((cbaPrice - parseFloat(costPrice)).toFixed(2))
     });
 
-  } catch (error) {
-    console.error('Stripe error:', error.message);
-    return res.status(500).json({ error: error.message });
+  } catch(e) {
+    console.error('Stripe error:', e.message);
+    return res.status(500).json({ error: e.message });
   }
-}
+};
