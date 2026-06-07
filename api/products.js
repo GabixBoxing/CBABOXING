@@ -102,8 +102,12 @@ module.exports = async function handler(req, res) {
     let products = list
       .filter(p => isValidProduct(p.productNameEn || '', p.categoryName || ''))
       .map(p => {
-        const sku = p.productSku?.[0] || {};
-        const cost = parseFloat(sku.sellPrice || sku.price || 0);
+        const sku = p.productSku?.[0] || p.variants?.[0] || {};
+        const cost = parseFloat(
+          sku.sellPrice || sku.price ||
+          p.sellPrice || p.price ||
+          p.productSku?.[0]?.sellPrice || 0
+        );
         const cbaPrice = parseFloat((cost * CBA_MARGIN).toFixed(2));
         const country = p.supplierCountry || p.countryCode || '';
         const isPreferred = PREFERRED_COUNTRIES.includes(country);
