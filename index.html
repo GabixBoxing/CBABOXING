@@ -933,72 +933,83 @@ function busqCat(cat) {
   document.getElementById('buscador').scrollIntoView({behavior:'smooth'});
 }
 async function buscar() {
-  var q = document.getElementById('bus-input').value.trim();
+  var q = (document.getElementById('bus-input') || {}).value;
+  if (!q) q = '';
+  q = q.trim();
   if (!q) return;
+
   var grid = document.getElementById('bus-grid');
   var status = document.getElementById('bus-status');
-  status.style.display = 'block';
+  if (!grid || !status) return;
+
   grid.innerHTML = '';
+  status.style.display = 'block';
+
+  var resp, d;
   try {
-    var r = await fetch('/api/products?search=' + encodeURIComponent(q) + '&limit=20');
-    var data = await r.json();
+    resp = await fetch('/api/products?search=' + encodeURIComponent(q) + '&limit=20');
+    d = await resp.json();
+  } catch(err) {
     status.style.display = 'none';
-    if (!data.products || data.products.length === 0) {
-      showAmazon(q);
-      return;
-    }
-    // Render each product safely
-    var rendered = 0;
-    data.products.forEach(function(p) {
-      try {
-        renderProd(p, grid);
-        rendered++;
-      } catch(renderErr) {
-        console.error('renderProd error:', renderErr, p);
-      }
-    });
-    if (rendered === 0) showAmazon(q);
-  } catch(e) {
-    console.error('buscar error:', e);
-    status.style.display = 'none';
-    // Show error in grid instead of Amazon
-    grid.innerHTML = '<div style="color:#d4a017;font-family:Barlow Condensed,sans-serif;padding:20px;text-align:center;border:1px solid rgba(212,160,23,.2)">Error: ' + e.message + '<br><br><button onclick="showAmazon(\'' + q + '\')" style="background:#d4a017;color:#000;border:none;padding:8px 16px;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-weight:700">VER EN AMAZON</button></div>';
+    grid.innerHTML = '<div style="color:#888;text-align:center;padding:32px">Error de red. Verifica tu conexión.</div>';
+    return;
+  }
+
+  status.style.display = 'none';
+
+  if (!d || !d.products || d.products.length === 0) {
+    var amazonUrl = 'https://www.amazon.com/s?k=' + encodeURIComponent(q) + '&tag=osvimerboxing-20';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:36px;border:1px solid rgba(212,160,23,.2)">'
+      + '<div style="font-size:28px;margin-bottom:10px">🛒</div>'
+      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:16px;color:#d4a017;text-transform:uppercase;margin-bottom:8px">Ver en Amazon</div>'
+      + '<p style="color:rgba(245,240,232,.6);font-size:13px;margin-bottom:14px">Productos con envío Prime</p>'
+      + '<a href="' + amazonUrl + '" target="_blank" style="background:#d4a017;color:#000;padding:11px 24px;text-decoration:none;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase">VER EN AMAZON →</a>'
+      + '<div style="margin-top:10px;font-size:11px;color:#555">Tu compra apoya a Cuban Boxing Academy</div>'
+      + '</div>';
+    return;
+  }
+
+  for (var i = 0; i < d.products.length; i++) {
+    var p = d.products[i];
+    try { renderProd(p, grid); } catch(e) { console.error('render error', e); }
   }
 }
 function renderProd(p, grid) {
   var card = document.createElement('div');
   card.className = 'pc';
-  // Image
+
   var img = document.createElement('img');
   img.src = p.image || '';
-  img.alt = p.name;
-  img.onerror = function(){ this.style.display='none'; };
-  // Body
+  img.alt = '';
+  img.onerror = function() { this.style.background = '#1a1a25'; this.style.display = 'none'; };
+
   var body = document.createElement('div');
   body.className = 'pc-body';
-  var precio = p.cbaPrice ? ('$' + p.cbaPrice.toFixed(2)) : '--';
-  // Stars
+
   var stars = document.createElement('div');
   stars.className = 'pc-stars';
   stars.textContent = '⭐⭐⭐⭐⭐';
-  // Name — textContent avoids HTML entity issues
+
   var nameEl = document.createElement('div');
   nameEl.className = 'pc-name';
-  nameEl.textContent = p.name;
-  // Price
+  nameEl.textContent = String(p.name || '').substring(0, 60);
+
+  var price = (p.cbaPrice && p.cbaPrice > 0) ? ('$' + Number(p.cbaPrice).toFixed(2)) : '--';
   var priceEl = document.createElement('div');
   priceEl.className = 'pc-price';
-  priceEl.textContent = precio;
-  // Shipping
+  priceEl.textContent = price;
+
   var shipEl = document.createElement('div');
   shipEl.className = 'pc-ship';
   shipEl.textContent = '📦 ' + (p.shippingTime || '7-15 días');
-  // Buy button
+
   var btn = document.createElement('button');
   btn.className = 'pc-buy';
   btn.textContent = 'COMPRAR →';
-  btn.onclick = function(){ openProdModal(p); };
-  // Assemble
+  (function(prod) {
+    btn.onclick = function() { openProdModal(prod); };
+  })(p);
+
   body.appendChild(stars);
   body.appendChild(nameEl);
   body.appendChild(priceEl);
@@ -1022,12 +1033,6 @@ function showAmazon(q) {
 
 // ─── STRIPE PAYMENT ───
 async function pagarStripe(nombre, costPrice, imagen) {
-  // Find the button that was clicked
-  var btn = event.currentTarget;
-  var orig = btn.textContent;
-  btn.textContent = '⏳ PROCESANDO...';
-  btn.disabled = true;
-
   try {
     var r = await fetch('/api/checkout', {
       method: 'POST',
@@ -1035,22 +1040,11 @@ async function pagarStripe(nombre, costPrice, imagen) {
       body: JSON.stringify({productName: nombre, costPrice: costPrice, image: imagen, quantity: 1})
     });
     var data = await r.json();
-
-    if (data.url) {
-      // SUCCESS — go to Stripe checkout
-      window.location.href = data.url;
-      return;
-    }
-
-    // Stripe returned error
-    btn.textContent = orig;
-    btn.disabled = false;
-    alert('Error al procesar el pago. Por favor intenta de nuevo.');
-
+    if (data.url) { window.location.href = data.url; return; }
+    throw new Error('No URL from checkout');
   } catch(e) {
-    btn.textContent = orig;
-    btn.disabled = false;
-    alert('Error de conexión. Por favor intenta de nuevo.');
+    var msg = 'Hola Coach, quiero comprar: ' + nombre + '. ¿Puedes ayudarme?';
+    window.open('https://wa.me/17027234009?text=' + encodeURIComponent(msg), '_blank');
   }
 }
 // Payment return handler
@@ -1278,200 +1272,6 @@ document.addEventListener('DOMContentLoaded', function() {
   try { saved = localStorage.getItem('cba_lang'); } catch(e) {}
   setLang(saved || 'es');
   loadCoachPhoto();
-});
-</script>
-
-
-<!-- ═══ PRODUCT MODAL ═══ -->
-<style>
-#prod-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:8000;align-items:center;justify-content:center;padding:16px}
-#prod-modal.open{display:flex}
-.pm-box{background:#0e0e16;border:1px solid rgba(212,160,23,.28);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative}
-.pm-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#888;font-size:22px;cursor:pointer;z-index:1}
-.pm-img{width:100%;aspect-ratio:1;object-fit:cover;background:#1a1a25}
-.pm-body{padding:20px}
-.pm-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#f5f0e8;text-transform:uppercase;margin-bottom:8px;line-height:1.2}
-.pm-price{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#d4a017;margin-bottom:16px}
-.pm-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.2em;color:#888;text-transform:uppercase;margin-bottom:8px}
-.pm-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.pm-opt{background:transparent;border:1px solid rgba(255,255,255,.15);color:#f5f0e8;padding:6px 14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;cursor:pointer;transition:.2s}
-.pm-opt:hover,.pm-opt.selected{border-color:#d4a017;color:#d4a017;background:rgba(212,160,23,.08)}
-.pm-qty-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.pm-qty-btn{background:#1a1a25;border:1px solid rgba(255,255,255,.15);color:#f5f0e8;width:36px;height:36px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
-.pm-qty-btn:hover{border-color:#d4a017;color:#d4a017}
-#pm-qty{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#f5f0e8;min-width:30px;text-align:center}
-.pm-buy-btn{width:100%;background:#d4a017;color:#0a0a0f;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.2s}
-.pm-buy-btn:hover{background:#f0c040}
-.pm-buy-btn:disabled{background:#555;color:#888;cursor:not-allowed}
-.pm-shipping{font-size:12px;color:#888;text-align:center;margin-top:10px;font-family:'Barlow',sans-serif}
-.pm-loading{text-align:center;padding:32px;color:#888;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:.1em}
-</style>
-
-<div id="prod-modal">
-  <div class="pm-box">
-    <button class="pm-close" onclick="closeProdModal()">✕</button>
-    <img id="pm-img" class="pm-img" src="" alt="">
-    <div class="pm-body">
-      <div id="pm-name" class="pm-name"></div>
-      <div id="pm-price" class="pm-price"></div>
-      <div id="pm-variants-section"></div>
-      <div class="pm-qty-row">
-        <div class="pm-label" style="margin:0">Cantidad:</div>
-        <button class="pm-qty-btn" onclick="changeQty(-1)">−</button>
-        <div id="pm-qty">1</div>
-        <button class="pm-qty-btn" onclick="changeQty(1)">+</button>
-      </div>
-      <button id="pm-buy-btn" class="pm-buy-btn" onclick="confirmBuy()">COMPRAR →</button>
-      <div id="pm-shipping" class="pm-shipping">📦 Envío: 7-15 días · Directo a tu puerta</div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ─── PRODUCT MODAL ───
-var _pm = { product: null, variants: [], selectedColor: '', selectedSize: '', qty: 1, selectedVariant: null };
-
-function openProdModal(p) {
-  _pm.product = p;
-  _pm.qty = 1;
-  _pm.selectedColor = '';
-  _pm.selectedSize = '';
-  _pm.selectedVariant = null;
-
-  document.getElementById('pm-img').src = p.image || '';
-  document.getElementById('pm-name').textContent = p.name;
-  document.getElementById('pm-price').textContent = p.cbaPrice ? '$' + p.cbaPrice.toFixed(2) : '--';
-  document.getElementById('pm-qty').textContent = '1';
-  document.getElementById('pm-variants-section').innerHTML = '<div class="pm-loading">⏳ Cargando opciones...</div>';
-  document.getElementById('pm-buy-btn').disabled = false;
-  document.getElementById('prod-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  // Fetch variants
-  fetch('/api/product-detail?pid=' + encodeURIComponent(p.id))
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      _pm.variants = data.variants || [];
-      renderVariants(data);
-    })
-    .catch(function(){
-      document.getElementById('pm-variants-section').innerHTML = '';
-    });
-}
-
-function renderVariants(data) {
-  var sec = document.getElementById('pm-variants-section');
-  var html = '';
-
-  if (data.colors && data.colors.length > 1) {
-    html += '<div class="pm-label">Color:</div><div class="pm-options" id="pm-colors">';
-    data.colors.forEach(function(c) {
-      if(c) html += '<button class="pm-opt" onclick="selectColor(this,'' + c.replace(/'/g,"\'") + '')">' + c + '</button>';
-    });
-    html += '</div>';
-  }
-
-  if (data.sizes && data.sizes.length > 1) {
-    html += '<div class="pm-label">Talla / Tamaño:</div><div class="pm-options" id="pm-sizes">';
-    data.sizes.forEach(function(s) {
-      if(s) html += '<button class="pm-opt" onclick="selectSize(this,'' + s.replace(/'/g,"\'") + '')">' + s + '</button>';
-    });
-    html += '</div>';
-  }
-
-  if (!html) {
-    html = '<div style="color:#888;font-size:13px;margin-bottom:16px;font-family:Barlow,sans-serif">Producto único — sin variantes</div>';
-    _pm.selectedVariant = _pm.variants[0] || null;
-  }
-
-  sec.innerHTML = html;
-}
-
-function selectColor(btn, color) {
-  document.querySelectorAll('#pm-colors .pm-opt').forEach(function(b){ b.classList.remove('selected'); });
-  btn.classList.add('selected');
-  _pm.selectedColor = color;
-  updateVariantPrice();
-}
-
-function selectSize(btn, size) {
-  document.querySelectorAll('#pm-sizes .pm-opt').forEach(function(b){ b.classList.remove('selected'); });
-  btn.classList.add('selected');
-  _pm.selectedSize = size;
-  updateVariantPrice();
-}
-
-function updateVariantPrice() {
-  var v = _pm.variants.find(function(x) {
-    var colorMatch = !_pm.selectedColor || x.color === _pm.selectedColor;
-    var sizeMatch = !_pm.selectedSize || x.size === _pm.selectedSize;
-    return colorMatch && sizeMatch;
-  });
-  if (v) {
-    _pm.selectedVariant = v;
-    document.getElementById('pm-price').textContent = '$' + v.price.toFixed(2);
-    if (v.image) document.getElementById('pm-img').src = v.image;
-  }
-}
-
-function changeQty(delta) {
-  _pm.qty = Math.max(1, Math.min(10, _pm.qty + delta));
-  document.getElementById('pm-qty').textContent = _pm.qty;
-}
-
-function confirmBuy() {
-  var p = _pm.product;
-  if (!p) { alert('Error: no hay producto seleccionado'); return; }
-
-  var variant = _pm.selectedVariant || (_pm.variants.length > 0 ? _pm.variants[0] : null);
-  var cost = parseFloat(variant ? variant.costPrice : (p.costPrice || 0));
-  var name = p.name;
-  if (_pm.selectedColor) name += ' - ' + _pm.selectedColor;
-  if (_pm.selectedSize) name += ' / ' + _pm.selectedSize;
-
-  if (!cost || cost <= 0) {
-    cost = parseFloat(p.costPrice || p.cbaPrice / 1.40 || 1);
-  }
-
-  var btn = document.getElementById('pm-buy-btn');
-  btn.innerHTML = '⏳ PROCESANDO...';
-  btn.disabled = true;
-
-  fetch('/api/checkout', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      productName: name.substring(0, 100),
-      costPrice: cost,
-      image: (p.image || '').substring(0, 200),
-      quantity: _pm.qty || 1
-    })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.url) {
-      window.location.href = d.url;
-    } else {
-      btn.innerHTML = 'COMPRAR →';
-      btn.disabled = false;
-      alert('Error: ' + (d.error || 'No se pudo procesar el pago. Intenta de nuevo.'));
-    }
-  })
-  .catch(function(e) {
-    btn.innerHTML = 'COMPRAR →';
-    btn.disabled = false;
-    alert('Error de conexión. Por favor intenta de nuevo.');
-    console.error('Checkout error:', e);
-  });
-}
-
-function closeProdModal() {
-  document.getElementById('prod-modal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-document.getElementById('prod-modal').addEventListener('click', function(e){
-  if(e.target === this) closeProdModal();
 });
 </script>
 
