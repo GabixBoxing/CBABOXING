@@ -943,11 +943,26 @@ async function buscar() {
     var r = await fetch('/api/products?search=' + encodeURIComponent(q) + '&limit=20');
     var data = await r.json();
     status.style.display = 'none';
-    if (!data.products || data.products.length === 0) { showAmazon(q); return; }
-    data.products.forEach(function(p) { renderProd(p, grid); });
+    if (!data.products || data.products.length === 0) {
+      showAmazon(q);
+      return;
+    }
+    // Render each product safely
+    var rendered = 0;
+    data.products.forEach(function(p) {
+      try {
+        renderProd(p, grid);
+        rendered++;
+      } catch(renderErr) {
+        console.error('renderProd error:', renderErr, p);
+      }
+    });
+    if (rendered === 0) showAmazon(q);
   } catch(e) {
+    console.error('buscar error:', e);
     status.style.display = 'none';
-    showAmazon(q);
+    // Show error in grid instead of Amazon
+    grid.innerHTML = '<div style="color:#d4a017;font-family:Barlow Condensed,sans-serif;padding:20px;text-align:center;border:1px solid rgba(212,160,23,.2)">Error: ' + e.message + '<br><br><button onclick="showAmazon(\'' + q + '\')" style="background:#d4a017;color:#000;border:none;padding:8px 16px;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-weight:700">VER EN AMAZON</button></div>';
   }
 }
 function renderProd(p, grid) {
