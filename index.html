@@ -89,31 +89,6 @@ nav{position:sticky;top:41px;z-index:500;background:rgba(10,10,15,.97);border-bo
 .mob-dd-links{display:flex;flex-direction:column;gap:4px;padding-left:12px;border-left:2px solid rgba(212,160,23,.2)}
 .mob-dd-links a{font-size:12px;padding:5px 0;color:rgba(212,160,23,.8)}
 
-/* BUSCADOR */
-#buscador{background:#050508;border-bottom:1px solid rgba(212,160,23,.1);padding:36px 20px}
-.bus-wrap{max-width:760px;margin:0 auto}
-.bus-bar{display:flex;border:2px solid var(--gold);margin-bottom:14px}
-.bus-icon{padding:0 14px;color:var(--gold);font-size:18px;display:flex;align-items:center;border-right:1px solid rgba(212,160,23,.25);flex-shrink:0}
-#bus-input{flex:1;background:transparent;border:none;color:var(--white);padding:14px 16px;font-size:15px;font-family:'Barlow',sans-serif;outline:none}
-#bus-input::placeholder{color:var(--gray)}
-#bus-btn{background:var(--gold);color:var(--dark);border:none;padding:14px 24px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transition:.2s}
-#bus-btn:hover{background:var(--gold2)}
-.bus-cats{display:flex;flex-wrap:wrap;gap:6px}
-.bcat{background:transparent;border:1px solid rgba(212,160,23,.2);color:rgba(245,240,232,.6);padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:.2s}
-.bcat:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,160,23,.07)}
-#bus-status{text-align:center;display:none;padding:12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--gold);letter-spacing:.1em}
-#bus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px}
-.pc{background:var(--dark3);border:1px solid rgba(212,160,23,.1);overflow:hidden;display:flex;flex-direction:column;transition:.2s}
-.pc:hover{border-color:rgba(212,160,23,.4);transform:translateY(-2px)}
-.pc img{width:100%;aspect-ratio:1;object-fit:cover;background:var(--dark2)}
-.pc-body{padding:12px;flex:1;display:flex;flex-direction:column}
-.pc-stars{font-size:10px;color:var(--gold);margin-bottom:4px}
-.pc-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3;flex:1}
-.pc-price{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--gold);margin-bottom:4px}
-.pc-ship{font-size:10px;color:var(--gray);margin-bottom:8px}
-.pc-buy{background:var(--gold);color:var(--dark);border:none;padding:8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.2s;width:100%}
-.pc-buy:hover{background:var(--gold2)}
-
 /* SECTIONS */
 section{padding:72px 20px}
 .si{max-width:1100px;margin:0 auto}
@@ -385,32 +360,7 @@ footer{background:var(--dark2);border-top:1px solid rgba(212,160,23,.12);padding
 </div>
 
 <!-- ═══ BUSCADOR GLOBAL ═══ -->
-<section id="buscador" style="padding:32px 20px;background:#050508;border-bottom:1px solid rgba(212,160,23,.1)">
-  <div class="bus-wrap">
-    <div class="bus-bar">
-      <div class="bus-icon">🔍</div>
-      <input type="text" id="bus-input" placeholder="Encuentra lo que necesitas..." data-i-ph="search-placeholder"
-        onkeypress="if(event.key==='Enter')buscar()">
-      <button id="bus-btn" onclick="buscar()" data-i="search-btn">BUSCAR</button>
-    </div>
-    <div class="bus-cats">
-      <button onclick="busqCat('boxing gloves')" class="bcat">🥊 Guantes</button>
-      <button onclick="busqCat('gym clothing')" class="bcat">👕 Ropa</button>
-      <button onclick="busqCat('running shoes')" class="bcat">👟 Zapatos</button>
-      <button onclick="busqCat('dumbbells weights')" class="bcat">🏋️ Pesas</button>
-      <button onclick="busqCat('smart watch')" class="bcat">⌚ Smartwatch</button>
-      <button onclick="busqCat('bluetooth earbuds')" class="bcat">🎧 Audífonos</button>
-      <button onclick="busqCat('led smart tv')" class="bcat">📺 TV</button>
-      <button onclick="busqCat('mens clothing fashion')" class="bcat">👔 Hombre</button>
-      <button onclick="busqCat('womens dress fashion')" class="bcat">👗 Mujer</button>
-      <button onclick="busqCat('kitchen gadgets')" class="bcat">🍳 Cocina</button>
-      <button onclick="busqCat('skincare beauty')" class="bcat">✨ Belleza</button>
-      <button onclick="busqCat('phone accessories')" class="bcat">📱 Celular</button>
-    </div>
-    <div id="bus-status">⏳ BUSCANDO PRODUCTOS 5 ESTRELLAS...</div>
-    <div id="bus-grid"></div>
-  </div>
-</section>
+
 
 <!-- ═══ HERO ═══ -->
 <section id="inicio">
@@ -746,8 +696,7 @@ footer{background:var(--dark2);border-top:1px solid rgba(212,160,23,.12);padding
           <li><a href="#campeones">Campeones</a></li>
           <li><a href="#tienda">Tienda CBA</a></li>
           <li><a href="#faq">FAQ</a></li>
-          <li><a href="#buscador">Buscador Global</a></li>
-        </ul>
+          </ul>
       </div>
       <div class="footer-col">
         <h4>Contacto</h4>
@@ -925,100 +874,6 @@ function togglePilares() {
 function toggleChamps() {
   toggle('champs-content','champs-arrow','champs-txt','champs-open','champs-close');
 }
-
-// ─── BUSCADOR GLOBAL ───
-function busqCat(cat) {
-  document.getElementById('bus-input').value = cat;
-  buscar();
-  document.getElementById('buscador').scrollIntoView({behavior:'smooth'});
-}
-async function buscar() {
-  var inp = document.getElementById('bus-input');
-  var grid = document.getElementById('bus-grid');
-  var status = document.getElementById('bus-status');
-  if (!inp||!grid||!status) return;
-  var q = inp.value.trim();
-  if (!q) return;
-  grid.innerHTML=''; status.style.display='block';
-  try {
-    var r = await fetch('/api/products?search='+encodeURIComponent(q)+'&limit=20');
-    var d = await r.json();
-    status.style.display='none';
-    if (!d||!d.products||d.products.length===0) {
-      var url='https://www.amazon.com/s?k='+encodeURIComponent(q)+'&tag=osvimerboxing-20';
-      grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:36px;border:1px solid rgba(212,160,23,.2)"><div style="font-size:28px;margin-bottom:10px">🛒</div><div style="font-family:Barlow Condensed,sans-serif;font-size:15px;color:#d4a017;text-transform:uppercase;margin-bottom:8px">Ver en Amazon</div><a href="'+url+'" target="_blank" style="background:#d4a017;color:#000;padding:10px 22px;text-decoration:none;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase">VER EN AMAZON →</a></div>';
-      return;
-    }
-    for (var i=0;i<d.products.length;i++) {
-      try { renderProd(d.products[i], grid); } catch(e) {}
-    }
-  } catch(e) {
-    status.style.display='none';
-    grid.innerHTML='<p style="color:#888;text-align:center;padding:20px">Error de conexión. Intenta de nuevo.</p>';
-  }
-}
-function renderProd(p, grid) {
-  var card = document.createElement('div');
-  card.className = 'pc';
-  var img = document.createElement('img');
-  img.src = p.image || '';
-  img.alt = p.name;
-  var body = document.createElement('div');
-  body.className = 'pc-body';
-  var precio = p.cbaPrice ? ('$' + p.cbaPrice.toFixed(2)) : '--';
-  body.innerHTML = '<div class="pc-stars">⭐⭐⭐⭐⭐</div>'
-    + '<div class="pc-name">' + p.name + '</div>'
-    + '<div class="pc-price">' + precio + '</div>'
-    + '<div class="pc-ship">📦 ' + (p.shippingTime || '7-15 días') + '</div>';
-  var btn = document.createElement('button');
-  btn.className = 'pc-buy';
-  btn.textContent = 'COMPRAR →';
-  btn.onclick = function() { pagarStripe(p.name, p.costPrice || 0, p.image || ''); };
-  body.appendChild(btn);
-  card.appendChild(img);
-  card.appendChild(body);
-  grid.appendChild(card);
-}
-function showAmazon(q) {
-  var grid = document.getElementById('bus-grid');
-  var url = 'https://www.amazon.com/s?k=' + encodeURIComponent(q) + '&tag=' + AMAZON_TAG;
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:36px;border:1px solid rgba(212,160,23,.2);background:rgba(212,160,23,.03)">'
-    + '<div style="font-size:28px;margin-bottom:10px">🛒</div>'
-    + '<div style="font-family:Barlow Condensed,sans-serif;font-size:16px;color:var(--gold);text-transform:uppercase;margin-bottom:8px">Encontramos en Amazon</div>'
-    + '<p style="color:rgba(245,240,232,.6);font-size:13px;margin-bottom:14px">Productos Prime recomendados por el Coach</p>'
-    + '<a href="' + url + '" target="_blank" style="background:var(--gold);color:var(--dark);padding:11px 24px;text-decoration:none;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase">VER EN AMAZON →</a>'
-    + '<div style="margin-top:10px;font-size:11px;color:var(--gray)">Tu compra apoya a Cuban Boxing Academy</div>'
-    + '</div>';
-}
-
-// ─── STRIPE PAYMENT ───
-async function pagarStripe(nombre, costPrice, imagen) {
-  try {
-    var r = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({productName: nombre, costPrice: costPrice, image: imagen, quantity: 1})
-    });
-    var data = await r.json();
-    if (data.url) { window.location.href = data.url; return; }
-    throw new Error('No URL from checkout');
-  } catch(e) {
-    var msg = 'Hola Coach, quiero comprar: ' + nombre + '. ¿Puedes ayudarme?';
-    window.open('https://wa.me/17027234009?text=' + encodeURIComponent(msg), '_blank');
-  }
-}
-// Payment return handler
-(function() {
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('payment') === 'success') {
-    var d = document.createElement('div');
-    d.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#143d14;border:1px solid #4a9a4a;color:#fff;padding:14px 24px;z-index:9998;font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:900;letter-spacing:.1em;text-transform:uppercase';
-    d.textContent = '✅ PAGO EXITOSO — ¡GRACIAS!';
-    document.body.appendChild(d);
-    setTimeout(function() { d.remove(); }, 5000);
-    history.replaceState({}, '', window.location.pathname);
-  }
-})();
 
 // ─── CHAT IA ───
 var chatOpen = false;
@@ -1237,148 +1092,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <!-- ═══ PRODUCT MODAL ═══ -->
-<style>
-#pm{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9000;align-items:center;justify-content:center;padding:16px}
-#pm.open{display:flex}
-.pmb{background:#0e0e16;border:1px solid rgba(212,160,23,.3);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative}
-.pmx{position:absolute;top:10px;right:14px;background:none;border:none;color:#888;font-size:24px;cursor:pointer;z-index:1;line-height:1}
-.pmimg{width:100%;aspect-ratio:1;object-fit:cover;background:#1a1a25}
-.pmbody{padding:20px}
-.pmname{font-family:"Barlow Condensed",sans-serif;font-size:18px;font-weight:900;color:#f5f0e8;text-transform:uppercase;margin-bottom:8px;line-height:1.2}
-.pmprice{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:900;color:#d4a017;margin-bottom:16px}
-.pmlabel{font-family:"Barlow Condensed",sans-serif;font-size:11px;letter-spacing:.2em;color:#888;text-transform:uppercase;margin-bottom:8px;display:block}
-.pmopts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.pmopt{background:transparent;border:1px solid rgba(255,255,255,.15);color:#f5f0e8;padding:6px 14px;font-family:"Barlow Condensed",sans-serif;font-size:12px;cursor:pointer;transition:.2s}
-.pmopt:hover,.pmopt.sel{border-color:#d4a017;color:#d4a017;background:rgba(212,160,23,.08)}
-.pmqrow{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.pmqbtn{background:#1a1a25;border:1px solid rgba(255,255,255,.15);color:#f5f0e8;width:36px;height:36px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.pmqbtn:hover{border-color:#d4a017;color:#d4a017}
-.pmbuybtn{width:100%;background:#d4a017;color:#0a0a0f;border:none;padding:14px;font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
-.pmbuybtn:hover{background:#f0c040}
-.pmbuybtn:disabled{background:#555;color:#888;cursor:not-allowed}
-</style>
 
-<div id="pm">
-  <div class="pmb">
-    <button class="pmx" onclick="closePM()">✕</button>
-    <img id="pmimg" class="pmimg" src="" alt="">
-    <div class="pmbody">
-      <div id="pmname" class="pmname"></div>
-      <div id="pmprice" class="pmprice"></div>
-      <div id="pmvars"></div>
-      <div class="pmqrow">
-        <span class="pmlabel" style="margin:0">Cantidad:</span>
-        <button class="pmqbtn" onclick="pmQty(-1)">−</button>
-        <span id="pmqty" style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;color:#f5f0e8;min-width:24px;text-align:center">1</span>
-        <button class="pmqbtn" onclick="pmQty(1)">+</button>
-      </div>
-      <button id="pmbuybtn" class="pmbuybtn" onclick="pmBuy()">COMPRAR →</button>
-      <p style="font-size:11px;color:#888;text-align:center;margin-top:8px;font-family:Barlow,sans-serif">📦 Envío directo a tu puerta · 7-15 días</p>
-    </div>
-  </div>
-</div>
-
-<script>
-var _pm = {p:null, vars:[], selColor:'', selSize:'', qty:1, selVar:null};
-
-function openProdModal(p) {
-  _pm.p = p; _pm.vars = []; _pm.selColor = ''; _pm.selSize = ''; _pm.qty = 1; _pm.selVar = null;
-  document.getElementById('pmimg').src = p.image || '';
-  document.getElementById('pmname').textContent = p.name || '';
-  document.getElementById('pmprice').textContent = p.cbaPrice ? ('$' + Number(p.cbaPrice).toFixed(2)) : '--';
-  document.getElementById('pmqty').textContent = '1';
-  document.getElementById('pmvars').innerHTML = '<p style="color:#888;font-size:12px;font-family:Barlow,sans-serif">⏳ Cargando opciones...</p>';
-  document.getElementById('pmbuybtn').disabled = false;
-  document.getElementById('pmbuybtn').textContent = 'COMPRAR →';
-  document.getElementById('pm').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  // Load variants
-  fetch('/api/product-detail?pid=' + encodeURIComponent(p.id || ''))
-    .then(function(r){return r.json();})
-    .then(function(d){_pm.vars=d.variants||[];pmRenderVars(d);})
-    .catch(function(){document.getElementById('pmvars').innerHTML='';});
-}
-
-function pmRenderVars(d) {
-  var html = '';
-  var colors = d.colors||[]; var sizes = d.sizes||[];
-  if (colors.length > 1) {
-    html += '<span class="pmlabel">Color:</span><div class="pmopts" id="pmcolors">';
-    colors.forEach(function(c){if(c)html+='<button class="pmopt" onclick="pmSelColor(this,''+c.replace(/'/g,"\'")+'')">'+ c+'</button>';});
-    html += '</div>';
-  }
-  if (sizes.length > 1) {
-    html += '<span class="pmlabel">Talla:</span><div class="pmopts" id="pmsizes">';
-    sizes.forEach(function(s){if(s)html+='<button class="pmopt" onclick="pmSelSize(this,''+s.replace(/'/g,"\'")+'')">'+ s+'</button>';});
-    html += '</div>';
-  }
-  if (!html) { _pm.selVar = _pm.vars[0]||null; }
-  document.getElementById('pmvars').innerHTML = html;
-}
-
-function pmSelColor(btn, c) {
-  document.querySelectorAll('#pmcolors .pmopt').forEach(function(b){b.classList.remove('sel');});
-  btn.classList.add('sel'); _pm.selColor = c; pmUpdatePrice();
-}
-function pmSelSize(btn, s) {
-  document.querySelectorAll('#pmsizes .pmopt').forEach(function(b){b.classList.remove('sel');});
-  btn.classList.add('sel'); _pm.selSize = s; pmUpdatePrice();
-}
-function pmUpdatePrice() {
-  var v = _pm.vars.find(function(x){
-    return (!_pm.selColor||x.color===_pm.selColor)&&(!_pm.selSize||x.size===_pm.selSize);
-  });
-  if (v) { _pm.selVar=v; document.getElementById('pmprice').textContent='$'+Number(v.price).toFixed(2); if(v.image)document.getElementById('pmimg').src=v.image; }
-}
-function pmQty(d) { _pm.qty=Math.max(1,Math.min(10,_pm.qty+d)); document.getElementById('pmqty').textContent=_pm.qty; }
-
-function pmBuy() {
-  var p = _pm.p;
-  if (!p) return;
-  var v = _pm.selVar || (_pm.vars.length?_pm.vars[0]:null);
-  var cost = Number(v?v.costPrice:(p.costPrice||p.cbaPrice/1.4||1));
-  if (!cost||cost<=0) cost = Number(p.cbaPrice||1)/1.4;
-  var name = (p.name||'Product').substring(0,100);
-  if (_pm.selColor) name += ' - '+_pm.selColor;
-  if (_pm.selSize) name += ' / '+_pm.selSize;
-  var btn = document.getElementById('pmbuybtn');
-  btn.textContent = '⏳...'; btn.disabled = true;
-  fetch('/api/checkout',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({productName:name,costPrice:cost,image:(p.image||'').substring(0,200),quantity:_pm.qty||1})
-  })
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(d&&d.url){window.location.href=d.url;}
-    else{btn.textContent='COMPRAR →';btn.disabled=false;alert('Error: '+(d&&d.error||'Intenta de nuevo'));}
-  })
-  .catch(function(){btn.textContent='COMPRAR →';btn.disabled=false;alert('Error de conexión. Intenta de nuevo.');});
-}
-
-function closePM() {
-  document.getElementById('pm').classList.remove('open');
-  document.body.style.overflow='';
-}
-document.getElementById('pm').addEventListener('click',function(e){if(e.target===this)closePM();});
-
-// Override renderProd to use modal
-function renderProd(p, grid) {
-  var card = document.createElement('div'); card.className='pc';
-  var img = document.createElement('img'); img.src=p.image||''; img.alt='';
-  img.onerror=function(){this.style.display='none';};
-  var body = document.createElement('div'); body.className='pc-body';
-  var stars=document.createElement('div');stars.className='pc-stars';stars.textContent='⭐⭐⭐⭐⭐';
-  var nameEl=document.createElement('div');nameEl.className='pc-name';nameEl.textContent=String(p.name||'').substring(0,60);
-  var priceEl=document.createElement('div');priceEl.className='pc-price';
-  priceEl.textContent=(p.cbaPrice&&p.cbaPrice>0)?('$'+Number(p.cbaPrice).toFixed(2)):'--';
-  var shipEl=document.createElement('div');shipEl.className='pc-ship';shipEl.textContent='📦 '+(p.shippingTime||'7-15 días');
-  var btn=document.createElement('button');btn.className='pc-buy';btn.textContent='COMPRAR →';
-  (function(prod){btn.onclick=function(){openProdModal(prod);};})(p);
-  body.appendChild(stars);body.appendChild(nameEl);body.appendChild(priceEl);body.appendChild(shipEl);body.appendChild(btn);
-  card.appendChild(img);card.appendChild(body);grid.appendChild(card);
-}
-</script>
 
 </body>
 </html>
